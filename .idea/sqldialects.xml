@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/Carfix-Backend/src/main/resources/db/migration/V1__user.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/Carfix-Backend/src/main/resources/db/migration/V2__review.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/Carfix-Backend/src/main/resources/db/migration/V5__car.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/Carfix-Backend/src/main/resources/db/migration/V7__order.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/Carfix-Backend/src/main/resources/db/migration/V8__work_price.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/Carfix-Backend/src/main/resources/db/migration/V9__orders_works.sql" dialect="PostgreSQL" />
+    <file url="PROJECT" dialect="PostgreSQL" />
+  </component>
+</project>
