@@ -1,0 +1,60 @@
+<section class="vh-100">
+  <div class="container  h-100" style="padding-left: 3rem; padding-right: 3rem">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col ">
+        <div class="card" style="border-radius: 1rem;">
+          <div class="row g-0">
+            <div class="col-md-6 col-lg-5 d-none d-md-block" style="position: relative;">
+              <img ngSrc="assets/images/anime-car-city.jpg" alt="login form" style="border-radius: 1rem 0 0 1rem;" fill priority/>
+            </div>
+            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+              <div class="card-body p-4 p-lg-5 text-black">
+
+                <form [formGroup]="signUp" (submit)="register()" >
+                  <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Регистрация</h5>
+
+                  <div data-mdb-input-init class="form-outline mb-3">
+                    <label class="form-label" for="email">Адрес электронной почты</label>
+                    <span class="required">*</span>
+                    <input formControlName="email" type="email" id="email" name="username" class="form-control form-control-lg" placeholder="name@example.com" required minlength="5" maxlength="50"/>
+                  </div>
+
+                  <div data-mdb-input-init class="form-outline mb-3">
+                    <label class="form-label" for="password">Пароль</label>
+                    <span class="required">*</span>
+                    <input formControlName="password" type="password" id="password" class="form-control form-control-lg"/>
+                  </div>
+
+                  <div data-mdb-input-init class="form-outline mb-3">
+                    <label class="form-label" for="confirmPassword">Повторите пароль</label>
+                    <span class="required">*</span>
+                    <input type="password" id="confirmPassword" class="form-control form-control-lg"/>
+                  </div>
+
+                  <div data-mdb-input-init class="form-outline mb-4">
+                    <label class="form-label" for="phone-number">Номер телефона</label>
+                    <input formControlName="phoneNumber" id="phone-number" mask="(000) 000-00-00" prefix="+7" [showMaskTyped]="true" type="text" name="phoneNumber" class="form-control form-control-lg"/>
+                  </div>
+                  <div class="input-group mb-3">
+                    <span class="input-group-text">Имя и Фамилия</span>
+                    <input formControlName="firstName" type="text" class="form-control">
+                    <input formControlName="lastName" type="text" class="form-control">
+                  </div>
+
+                  <div class="pt-1 mb-4">
+                    <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block w-100" type="submit">Зарегистрироваться</button>
+                  </div>
+
+                  <p class="mb-5 pb-lg-2" style="color: #393f81;">Уже есть аккаунт?
+                    <a routerLink="/login" style="color: #393f81;">Войти</a>
+                  </p>
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

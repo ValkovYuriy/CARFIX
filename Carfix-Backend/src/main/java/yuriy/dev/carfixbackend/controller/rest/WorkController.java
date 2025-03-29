@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/services")
+@RequestMapping("/api/works")
 public class WorkController {
 
     private final WorkService workService;

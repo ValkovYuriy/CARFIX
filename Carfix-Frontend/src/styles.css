@@ -1,1 +1,179 @@
-/* You can add global styles to this file, and also import other style files */
+
+.text-bisque {
+  color: bisque!important; /* Основной цвет текста */
+}
+
+/* Переопределяем цвет текста для элементов с классом .text-muted */
+.text-bisque .text-muted {
+  color: bisque; /* Задаем тот же цвет текста для элементов .text-muted */
+}
+
+/* Если нужно сохранить цвет иконки звездочки */
+.text-bisque .fas.fa-star {
+  color: #fcff42; /* Сохраняем желтый цвет для звездочки */
+}
+
+.container-custom {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Глубокая тень */
+}
+
+.background-custom{
+  background: url('assets/images/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  font-family: Arial, sans-serif;
+}
+.wrapper{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Минимальная высота равна высоте окна браузера */
+}
+
+.content {
+  flex: 1; /* Делаем основное содержимое растягивающимся */
+  padding: 4rem;
+  background-color: #f4f4f4;
+}
+
+.search-results {
+  display: none;
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  z-index: 1;
+  max-height: 200px;
+  overflow-y: auto;
+  width: calc(100% - 2px); /* Adjust for border */
+  top: 100%;
+  left: 0;
+}
+
+.search-results ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.search-results li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.search-results li:hover {
+  background-color: #f0f0f0;
+}
+
+.contact-info {
+  padding: 20px;
+}
+.map-container {
+  width: 100%;
+  height: 600px;
+}
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+.review-container {
+  position: relative;
+  z-index: 1;
+  margin-top: 200px;
+}
+.review-card {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: text!important;
+}
+.carousel-item {
+  height: 500px; /* Установите желаемую высоту */
+}
+
+.carousel-image {
+  object-fit: cover; /* Масштабирует изображение, сохраняя соотношение сторон */
+  width: 100%; /* Заполняет всю ширину родительского элемента */
+  height: 100%; /* Заполняет всю высоту родительского элемента */
+}
+
+.custom-carousel-caption {
+  left: 0; /* Перемещает текст влево */
+  right: auto; /* Отключает правое выравнивание */
+  padding-left: 150px; /* Добавляет отступ слева для удобства чтения */
+  padding-bottom: 200px;
+  text-align: left; /* Выравнивает текст по центру */
+}
+app-header{
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font: 16px Arial;
+  }
+
+  /*the container must be positioned relative:*/
+  .autocomplete {
+    position: relative;
+    display: inline-block;
+  }
+
+  input {
+    border: 1px solid transparent;
+    background-color: #f1f1f1;
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  input[type=text] {
+    background-color: #f1f1f1;
+    width: 100%;
+  }
+
+  input[type=submit] {
+    background-color: DodgerBlue;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .autocomplete-items {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    /*position the autocomplete items to be the same width as the container:*/
+    top: 100%;
+    left: 0;
+    right: 0;
+  }
+
+  .autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
+    border-bottom: 1px solid #d4d4d4;
+  }
+
+  /*when hovering an item:*/
+  .autocomplete-items div:hover {
+    background-color: #676363 !important;
+  }
+
+  /*when navigating through the items using the arrow keys:*/
+  .autocomplete-active {
+    background-color: DodgerBlue !important;
+    color: #ffffff;
+  }
+
+}
+
+
+

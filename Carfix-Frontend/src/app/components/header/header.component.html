@@ -1,0 +1,73 @@
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" >
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="d-flex align-items-center py-3">
+        <img class="me-2" ngSrc="/assets/images/logo.png" alt="" width="40" height="40">
+        <span style="color: bisque">CARFIX</span>
+      </div>
+    </a>
+    <div class="collapse navbar-collapse" id="navbarCollapse" >
+      <ul class="navbar-nav me-auto mb-2 mb-md-0" >
+        @if(!authService.isLoggedIn()){
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/login" style="color: bisque">Войти</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/register" style="color: bisque">Зарегистрироваться</a>
+            </li>
+        }
+          <li class="nav-item" >
+            <a class="nav-link" href="/services" style="color: bisque">Услуги</a>
+          </li>
+          <li class="nav-item" >
+            <a class="nav-link" href="/#" style="color: bisque">Покупка автозапчастей</a>
+          </li>
+          <li class="nav-item" >
+            <a class="nav-link" href="/#" style="color: bisque">Бонусная программа</a>
+          </li>
+          <li class="nav-item" >
+            <a class="nav-link" href="/reviews" style="color: bisque">Отзывы</a>
+          </li>
+          <li class="nav-item" >
+            <a class="nav-link" href="/#" style="color: bisque">Контакты</a>
+          </li>
+
+      </ul>
+      @if(authService.isLoggedIn()){
+        <div class="d-flex align-items-center py-3 ">
+          <img class="me-2" ngSrc="/assets/images/avatar.png" alt="" width="40" height="40">
+          <div class="dropdown" >
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="me-2">{{decodedToken.firstName }} {{decodedToken.lastName}}</span>
+              <i class="arrow down"></i>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li><a class="dropdown-item" routerLink="/lk">Личный кабинет</a></li>
+              <li><a class="dropdown-item" routerLink="/registration-for-service">Записаться на обслуживание</a></li>
+              <li><a class="dropdown-item" routerLink="/settings">Настройки</a></li>
+              <li><a class="dropdown-item" (click)="authService.logout()" routerLink="/login">Выйти</a></li>
+            </ul>
+          </div>
+        </div>
+      }
+      <form class="d-flex position-relative" role="search">
+<!--        <div class="autocomplete">-->
+<!--        <mat-form-field class="bg-dark">-->
+          <input class="form-control lh-1 me-2 search-input" type="search" placeholder="Поиск" aria-label="Search" id="searchInput" [matAutocomplete]="auto" [formControl]="control">
+          <mat-autocomplete #auto="matAutocomplete" >
+            @for (service of filteredServices | async; track service) {
+              <mat-option class="custom-option" [value]="service">{{service}}</mat-option>
+            }
+          </mat-autocomplete>
+<!--        </div>-->
+        <button class="btn btn-outline-success" type="submit">Поиск</button>
+<!--        </mat-form-field>-->
+      </form>
+    </div>
+  </div>
+</nav>
+
