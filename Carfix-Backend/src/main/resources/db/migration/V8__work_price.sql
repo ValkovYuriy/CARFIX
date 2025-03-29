@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS work_price(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    price NUMERIC,
-    date TIMESTAMP,
+    price NUMERIC NOT NULL ,
+    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     work_id UUID REFERENCES work(id)
 )

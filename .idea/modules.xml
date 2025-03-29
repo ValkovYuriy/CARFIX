@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Carfix-Backend/Carfix-Backend.iml" filepath="$PROJECT_DIR$/Carfix-Backend/Carfix-Backend.iml" />
       <module fileurl="file://$PROJECT_DIR$/Carfix-Frontend.iml" filepath="$PROJECT_DIR$/Carfix-Frontend.iml" />
     </modules>
   </component>

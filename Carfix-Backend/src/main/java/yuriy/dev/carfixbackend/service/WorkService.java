@@ -27,7 +27,7 @@ public class WorkService {
     }
 
     public WorkDto findById(UUID id) {
-        Work work = workRepository.findById(id).orElse(null);
+        Work work = workRepository.findByIdWithLatestPrice(id).orElse(null);
         return workMapper.toDto(work);
     }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -13,22 +14,21 @@ import java.util.UUID;
 @EqualsAndHashCode
 @Builder
 @Entity
-@Table(name = "work")
-public class Work {
+@Table(name = "work_price")
+public class WorkPrice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "price", nullable = false)
+    private BigDecimal price;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "date")
+    private LocalDateTime date;
 
-    @Transient
-    private BigDecimal workPrice;
+    @ManyToOne
+    @JoinColumn(name = "work_id")
+    private Work work;
 
-    @Column(name = "image_url")
-    private String imageUrl;
 }

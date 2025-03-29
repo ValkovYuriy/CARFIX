@@ -7,7 +7,7 @@ public record WorkDto(
         UUID id,
         String name,
         String description,
-        BigDecimal price,
+        BigDecimal workPrice,
         String imageUrl
 ) {
 }

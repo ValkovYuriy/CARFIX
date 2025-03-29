@@ -11,14 +11,17 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import yuriy.dev.carfixbackend.service.CustomUserDetailService;
+import yuriy.dev.carfixbackend.token.JwtRequestFilter;
 
 import java.util.List;
 
@@ -29,26 +32,24 @@ import java.util.List;
 public class SecurityConfig {
 
     private final CustomUserDetailService customUserDetailService;
+    private final JwtRequestFilter jwtRequestFilter;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/reviews","/login" ,"/register","/test", "/api/**","/services","/images/**","/css/**","/js/**").permitAll()
-                        .anyRequest().hasAnyRole("USER", "ADMIN")
-                )
-                .formLogin((form)->form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        //.successHandler(customAuthenticationSuccessHandler)
-                        .permitAll()
+                        .requestMatchers("/auth/*", "/api/**").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .permitAll()
                 )
-                .authenticationProvider(authenticationProvider());
+                .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -74,13 +75,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOriginPatterns(List.of("*")); // Разрешаем все домены (в продакшене лучше указывать конкретные)
-        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Разрешаем эти HTTP методы
-        corsConfiguration.setAllowedHeaders(List.of("*")); // Разрешаем все заголовки (в продакшене лучше указывать конкретные)
-        corsConfiguration.setAllowCredentials(true); // Разрешаем отправлять куки и другие учетные данные
+        corsConfiguration.setAllowedOriginPatterns(List.of("*"));
+        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        corsConfiguration.setAllowedHeaders(List.of("*"));
+        corsConfiguration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration); // Применяем настройки CORS ко всем маршрутам
+        source.registerCorsConfiguration("/**", corsConfiguration);
 
         return source;
     }

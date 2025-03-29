@@ -19,3 +19,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+token:
+  signing:
+    key: ${KEY}

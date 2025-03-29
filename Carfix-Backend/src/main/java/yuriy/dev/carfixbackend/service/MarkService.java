@@ -21,7 +21,11 @@ public class MarkService {
     private final MarkMapper markMapper;
 
     public List<MarkDto> findAllMarks(){
-        return markRepository.findAll().stream().map(markMapper::toDto).toList();
+        return markRepository
+                .findAll()
+                .stream()
+                .map(markMapper::toDto)
+                .toList();
     }
 
     public MarkDto addMark(MarkDto markDto){
