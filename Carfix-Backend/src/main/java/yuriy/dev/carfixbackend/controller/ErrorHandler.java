@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
-import yuriy.dev.carfixbackend.dto.ApiResponseDto;
+import yuriy.dev.carfixbackend.dto.response.ApiResponseDto;
 import yuriy.dev.carfixbackend.exception.ExistsByUsernameException;
 
 

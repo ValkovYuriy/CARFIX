@@ -1,4 +1,4 @@
-package yuriy.dev.carfixbackend.dto;
+package yuriy.dev.carfixbackend.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,7 +13,7 @@ public class SignInRequest {
     @Email(message = "Адрес электронной почты должен быть в формате user@example.com")
     private String username;
 
-    @Size(max = 128, message = "Длина пароля должна быть не более 128 символов")
+    @Size(min = 4,max = 30, message = "Длина пароля должна быть от 4 до 30 символов")
     @NotBlank(message = "Пароль не может быть пустым")
     private String password;
 }

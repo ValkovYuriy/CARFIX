@@ -1,8 +1,16 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
 import {NgxMaskDirective} from 'ngx-mask';
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {NgOptimizedImage} from '@angular/common';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors, ValidatorFn,
+  Validators
+} from "@angular/forms";
+import {NgClass, NgOptimizedImage} from '@angular/common';
 import {catchError, of} from 'rxjs';
 import {AuthenticationService} from '../../services/AuthenticationService/authentication.service';
 
@@ -14,29 +22,49 @@ import {AuthenticationService} from '../../services/AuthenticationService/authen
     NgxMaskDirective,
     FormsModule,
     NgOptimizedImage,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgClass
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
 export class RegisterComponent implements OnInit{
 
+  errorMessage: string | null = null;
+
   signUp: FormGroup = new FormGroup({
       email: new FormControl('', [
-        Validators.required
+        Validators.required, Validators.email,Validators.minLength(5),Validators.maxLength(50)
       ]),
       password: new FormControl('', [
-        Validators.required
+        Validators.required, Validators.minLength(4),Validators.maxLength(30)
       ]),
-      phoneNumber: new FormControl(),
-      firstName: new FormControl(),
-      lastName: new FormControl()
+      confirmPassword: new FormControl('',[Validators.required,this.passwordMatchValidator()]),
+      phoneNumber: new FormControl('',[Validators.required, Validators.pattern(/^\+?[0-9]{10,15}$/)]),
+      firstName: new FormControl('',[Validators.required, Validators.minLength(2),Validators.maxLength(100)]),
+      lastName: new FormControl('',[Validators.required, Validators.minLength(2),Validators.maxLength(100)])
     }
   );
 
-  constructor(private authenticationService: AuthenticationService, private router: Router) {
+  passwordMatchValidator(): ValidatorFn {
+    return (control:AbstractControl) : ValidationErrors | null => {
 
+      const value = control.value;
+
+      if (!value) {
+        return null;
+      }
+
+      if(this.signUp){
+        const confirmPassword = this.signUp.get('confirmPassword')?.value;
+        const password = this.signUp.get('password')?.value;
+        return password === confirmPassword ? null : { mismatch: true };
+      }
+      return null;
+    }
   }
+
+  constructor(private authenticationService: AuthenticationService, private router: Router) {}
 
   ngOnInit() {
 
@@ -52,7 +80,8 @@ export class RegisterComponent implements OnInit{
         this.signUp.get('lastName')?.value)
         .pipe(
         catchError(err => {
-          console.error("Произошла ошибка при регистрации",err);
+          this.errorMessage = "Произошла ошибка при регистрации";
+          console.error(this.errorMessage,err);
           return of(null);
         })
       ).subscribe(response =>{

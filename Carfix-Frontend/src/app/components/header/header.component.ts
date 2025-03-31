@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
 import {AppComponent} from '../../app.component';
 import {AuthenticationService} from '../../services/AuthenticationService/authentication.service';
@@ -27,6 +27,11 @@ import {WorkService} from '../../services/WorkService/work.service';
 })
 export class HeaderComponent implements OnInit{
   @Input() decodedToken: any = null;
+  @Output() scrollToSection = new EventEmitter<string>();
+
+  onNavigate(id: string): void {
+    this.scrollToSection.emit(id);
+  }
   flag = true;
   control = new FormControl('');
   services: string[] = [];
@@ -37,7 +42,7 @@ export class HeaderComponent implements OnInit{
 
   ngOnInit() {
     this.workService.searchData$.subscribe((services) => {
-      this.services = services; // Получаем данные и сохраняем их в компоненте
+      this.services = services;
       this.filteredServices = this.control.valueChanges.pipe(
         startWith(''),
         map(value => this._filter(value || '')),
@@ -56,4 +61,6 @@ export class HeaderComponent implements OnInit{
 
 
   protected readonly async = async;
+  protected readonly scrollTo = scrollTo;
+  protected readonly window = window;
 }

@@ -16,31 +16,56 @@
                   <div data-mdb-input-init class="form-outline mb-3">
                     <label class="form-label" for="email">Адрес электронной почты</label>
                     <span class="required">*</span>
-                    <input formControlName="email" type="email" id="email" name="username" class="form-control form-control-lg" placeholder="name@example.com" required minlength="5" maxlength="50"/>
+                    <input [ngClass]="{ 'is-invalid': signUp.get('email')?.invalid && signUp.get('email')?.touched }" formControlName="email" type="email" id="email" name="username" class="form-control form-control-lg" placeholder="name@example.com" />
+                    <div class="invalid-feedback">
+                      Введите корректный email.
+                    </div>
                   </div>
 
                   <div data-mdb-input-init class="form-outline mb-3">
                     <label class="form-label" for="password">Пароль</label>
                     <span class="required">*</span>
-                    <input formControlName="password" type="password" id="password" class="form-control form-control-lg"/>
+                    <input [ngClass]="{ 'is-invalid': signUp.get('password')?.invalid && signUp.get('password')?.touched }" formControlName="password" type="password" id="password" class="form-control form-control-lg"/>
+                    <div class="invalid-feedback">
+                      Пароль должен содержать минимум 4 символа.
+                    </div>
                   </div>
 
                   <div data-mdb-input-init class="form-outline mb-3">
                     <label class="form-label" for="confirmPassword">Повторите пароль</label>
                     <span class="required">*</span>
-                    <input type="password" id="confirmPassword" class="form-control form-control-lg"/>
+                    <input [ngClass]="{ 'is-invalid': (signUp.get('confirmPassword')?.invalid || signUp.hasError('mismatch')) && signUp.get('confirmPassword')?.touched }" formControlName="confirmPassword" type="password" id="confirmPassword" class="form-control form-control-lg"/>
+                    <div class="invalid-feedback">
+                      Пароли не совпадают.
+                    </div>
                   </div>
 
                   <div data-mdb-input-init class="form-outline mb-4">
                     <label class="form-label" for="phone-number">Номер телефона</label>
-                    <input formControlName="phoneNumber" id="phone-number" mask="(000) 000-00-00" prefix="+7" [showMaskTyped]="true" type="text" name="phoneNumber" class="form-control form-control-lg"/>
+                    <input [ngClass]="{ 'is-invalid': signUp.get('phoneNumber')?.invalid && signUp.get('phoneNumber')?.touched }" formControlName="phoneNumber" id="phone-number" mask="(000) 000-00-00" prefix="+7" [showMaskTyped]="true" type="text" name="phoneNumber" class="form-control form-control-lg"/>
+                    <div class="invalid-feedback">
+                      Введите корректный номер телефона (например, +79991234567).
+                    </div>
                   </div>
                   <div class="input-group mb-3">
                     <span class="input-group-text">Имя и Фамилия</span>
-                    <input formControlName="firstName" type="text" class="form-control">
-                    <input formControlName="lastName" type="text" class="form-control">
+                    <input [ngClass]="{ 'is-invalid': signUp.get('firstName')?.invalid && signUp.get('firstName')?.touched }" formControlName="firstName" type="text" class="form-control">
+                    <input [ngClass]="{ 'is-invalid': signUp.get('lastName')?.invalid && signUp.get('lastName')?.touched }" formControlName="lastName" type="text" class="form-control">
+                    @if(signUp.get('firstName')?.invalid && signUp.get('firstName')?.touched){
+                      <div class="invalid-feedback">
+                        Введите корректное имя (минимум 2 символа).
+                      </div>
+                    } @else if (signUp.get('lastName')?.invalid && signUp.get('lastName')?.touched){
+                      <div class="invalid-feedback">
+                        Введите корректную фамилию (минимум 2 символа).
+                      </div>
+                    }
                   </div>
-
+                  @if(errorMessage){
+                    <div class="alert alert-danger mt-3">
+                      {{errorMessage}}
+                    </div>
+                  }
                   <div class="pt-1 mb-4">
                     <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block w-100" type="submit">Зарегистрироваться</button>
                   </div>

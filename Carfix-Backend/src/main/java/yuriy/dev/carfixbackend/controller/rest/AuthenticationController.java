@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import yuriy.dev.carfixbackend.auth.AuthenticationService;
-import yuriy.dev.carfixbackend.dto.JwtAuthenticationResponse;
-import yuriy.dev.carfixbackend.dto.SignInRequest;
-import yuriy.dev.carfixbackend.dto.SignUpRequest;
+import yuriy.dev.carfixbackend.dto.response.JwtAuthenticationResponse;
+import yuriy.dev.carfixbackend.dto.request.SignInRequest;
+import yuriy.dev.carfixbackend.dto.request.SignUpRequest;
 
 
 @Controller

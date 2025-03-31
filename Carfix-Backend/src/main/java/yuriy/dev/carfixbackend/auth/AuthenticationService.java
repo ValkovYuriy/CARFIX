@@ -7,9 +7,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import yuriy.dev.carfixbackend.dto.JwtAuthenticationResponse;
-import yuriy.dev.carfixbackend.dto.SignInRequest;
-import yuriy.dev.carfixbackend.dto.SignUpRequest;
+import yuriy.dev.carfixbackend.dto.response.JwtAuthenticationResponse;
+import yuriy.dev.carfixbackend.dto.request.SignInRequest;
+import yuriy.dev.carfixbackend.dto.request.SignUpRequest;
 import yuriy.dev.carfixbackend.dto.UserDto;
 import yuriy.dev.carfixbackend.mapper.UserMapper;
 import yuriy.dev.carfixbackend.model.User;

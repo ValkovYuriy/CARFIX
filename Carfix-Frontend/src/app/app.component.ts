@@ -8,13 +8,14 @@ import {catchError, filter, of, tap} from 'rxjs';
 import {ApiResponse} from './model/ApiResponse';
 import * as serviceDetails from './shared/js/services.js'
 import {AuthenticationService} from './services/AuthenticationService/authentication.service';
+import {NgOptimizedImage} from '@angular/common';
 
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, NgOptimizedImage],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -55,4 +56,12 @@ export class AppComponent implements OnInit{
   showServiceDetails(service: Work){
     serviceDetails.showServiceDetails(service);
   }
+
+  scrollTo(id: string): void {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
 }

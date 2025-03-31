@@ -72,3 +72,14 @@ input[type=submit] {
   color: bisque;
 }
 
+.nav-link {
+  color: bisque; /* Начальный цвет текста */
+  font-size: 18px;
+  text-decoration: none; /* Убираем подчеркивание по умолчанию */
+  transition: color 0.3s ease, text-decoration 0.3s ease; /* Плавный переход */
+}
+
+.nav-link:hover {
+  color: #e3bab7 !important; /* Цвет при наведении */
+  text-decoration: underline; /* Подчеркивание при наведении */
+}

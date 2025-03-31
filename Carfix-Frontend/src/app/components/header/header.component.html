@@ -10,7 +10,7 @@
       </div>
     </a>
     <div class="collapse navbar-collapse" id="navbarCollapse" >
-      <ul class="navbar-nav me-auto mb-2 mb-md-0" >
+      <ul class="navbar-nav me-auto mb-2 mb-md-0" style="cursor: pointer">
         @if(!authService.isLoggedIn()){
             <li class="nav-item">
               <a class="nav-link" routerLink="/login" style="color: bisque">Войти</a>
@@ -20,19 +20,19 @@
             </li>
         }
           <li class="nav-item" >
-            <a class="nav-link" href="/services" style="color: bisque">Услуги</a>
+            <a class="nav-link" (click)="onNavigate('services')" style="color: bisque">Услуги</a>
+          </li>
+<!--          <li class="nav-item" >-->
+<!--            <a class="nav-link" href="/#" style="color: bisque">Покупка автозапчастей</a>-->
+<!--          </li>-->
+<!--          <li class="nav-item" >-->
+<!--            <a class="nav-link" href="/#" style="color: bisque">Бонусная программа</a>-->
+<!--          </li>-->
+          <li class="nav-item" >
+            <a class="nav-link" (click)="onNavigate('reviews')" style="color: bisque">Отзывы</a>
           </li>
           <li class="nav-item" >
-            <a class="nav-link" href="/#" style="color: bisque">Покупка автозапчастей</a>
-          </li>
-          <li class="nav-item" >
-            <a class="nav-link" href="/#" style="color: bisque">Бонусная программа</a>
-          </li>
-          <li class="nav-item" >
-            <a class="nav-link" href="/reviews" style="color: bisque">Отзывы</a>
-          </li>
-          <li class="nav-item" >
-            <a class="nav-link" href="/#" style="color: bisque">Контакты</a>
+            <a class="nav-link" (click)="onNavigate('contacts')" style="color: bisque">Контакты</a>
           </li>
 
       </ul>

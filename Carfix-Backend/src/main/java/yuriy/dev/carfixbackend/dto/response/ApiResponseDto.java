@@ -1,4 +1,4 @@
-package yuriy.dev.carfixbackend.dto;
+package yuriy.dev.carfixbackend.dto.response;
 
 import lombok.*;
 

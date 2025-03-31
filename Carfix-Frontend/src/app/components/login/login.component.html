@@ -14,23 +14,31 @@
 
                 <form [formGroup]="signIn" (submit)="login()">
 
-                  <div class="d-flex align-items-center mb-3 pb-1">
-<!--                    <img src="assets/images/logo.png" width="40"/>-->
-                    <!--                    <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>-->
-                    <!--                    <span class="h1 fw-bold mb-0">Logo</span>-->
-                  </div>
-
                   <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Вход в аккаунт</h5>
 
                   <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="email" id="email" class="form-control form-control-lg" formControlName="email"/>
+                    <input type="email" id="email" class="form-control form-control-lg" formControlName="email"
+                           [ngClass]="{ 'is-invalid': signIn.get('email')?.invalid && signIn.get('email')?.touched }"/>
                     <label class="form-label" for="email">Адрес электронной почты</label>
+                    <div class="invalid-feedback">
+                      Введите корректный email.
+                    </div>
                   </div>
 
                   <div data-mdb-input-init class="form-outline mb-4">
-                    <input type="password" id="password" class="form-control form-control-lg" formControlName="password"/>
+                    <input type="password" id="password" class="form-control form-control-lg" formControlName="password"
+                           [ngClass]="{ 'is-invalid': signIn.get('password')?.invalid && signIn.get('password')?.touched }"/>
                     <label class="form-label" for="password">Пароль</label>
+                    <div class="invalid-feedback">
+                      Пароль должен содержать минимум 4 символа.
+                    </div>
                   </div>
+
+                  @if(errorMessage){
+                    <div class="alert alert-danger mt-3">
+                      {{errorMessage}}
+                    </div>
+                  }
 
                   <div class="pt-1 mb-4">
                     <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block w-100" type="submit">Войти</button>

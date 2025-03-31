@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import yuriy.dev.carfixbackend.dto.ApiResponseDto;
+import yuriy.dev.carfixbackend.dto.response.ApiResponseDto;
 import yuriy.dev.carfixbackend.dto.ReviewDto;
 import yuriy.dev.carfixbackend.service.ReviewService;
 
