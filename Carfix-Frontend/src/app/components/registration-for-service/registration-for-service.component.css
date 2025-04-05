@@ -1,0 +1,144 @@
+/*.steps-content {*/
+/*  margin-top: 16px;*/
+/*  border: 1px dashed #e9e9e9;*/
+/*  border-radius: 6px;*/
+/*  background-color: #fafafa;*/
+/*  min-height: 200px;*/
+/*  text-align: center;*/
+/*  padding-top: 80px;*/
+/*}*/
+.steps-content {
+  margin-top: 16px;
+  border: 1px dashed #e9e9e9;
+  border-radius: 6px;
+  background-color: #fafafa;
+  /* Убираем фиксированную минимальную высоту */
+  min-height: auto;
+
+  /* Добавляем padding для внутреннего содержимого */
+  padding: 24px; /* Верхний и нижний padding для отступов */
+
+  /* Центрируем заголовок */
+  text-align: left;
+
+  /* Для адаптивности форм */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+
+.steps-content h4 {
+  text-align: center; /* Выравниваем текст по центру */
+  margin-bottom: 24px; /* Отступ между заголовком и формой */
+}
+
+/* Стили для формы */
+.steps-content form {
+  width: 100%; /* Форма занимает всю ширину контейнера */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Стили для полей ввода */
+.steps-content input[type="text"],
+.steps-content input[type="email"] {
+  width: 100%; /* Каждое поле занимает всю ширину родительского элемента */
+  margin-bottom: 16px; /* Отступ между полями */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Стили для меток (labels) */
+.steps-content label {
+  font-size: 18px;
+  margin-right: 16px; /* Отступ между меткой и полем ввода */
+}
+
+.steps-action {
+  margin-top: 24px;
+}
+
+button {
+  margin-right: 8px;
+}
+
+/* Базовый стиль для всех кнопок */
+.custom-btn {
+  position: relative;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  overflow: hidden;
+}
+
+/* Стиль для кнопки "Назад" */
+.back-btn {
+  background-color: #f4f4f4;
+  color: #333;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.back-btn:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+/* Стиль для кнопки "Далее" */
+.next-btn {
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.next-btn:hover {
+  background: linear-gradient(90deg, #2575fc, #6a11cb);
+  transform: translateY(-2px);
+}
+
+/* Стиль для кнопки "Отправить" */
+.submit-btn {
+  background: linear-gradient(90deg, #ff7e5f, #feb47b);
+  color: white;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+.submit-btn:hover {
+  background: linear-gradient(90deg, #feb47b, #ff7e5f);
+  transform: translateY(-2px);
+}
+
+/* Анимация при наведении */
+.custom-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.custom-btn:hover::after {
+  opacity: 1;
+}
+
+/* Эффект пульсации при клике */
+.custom-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.home-btn{
+  margin-left: auto;
+}
+
+.home-btn:hover{
+  transform: translateY(-2px);
+}

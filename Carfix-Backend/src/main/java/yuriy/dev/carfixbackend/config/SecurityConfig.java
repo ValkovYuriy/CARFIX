@@ -3,6 +3,7 @@ package yuriy.dev.carfixbackend.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -41,7 +42,11 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/*", "/api/**").permitAll()
+                        .requestMatchers("/auth/*").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/**").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"/api/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/api/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .logout((logout) -> logout

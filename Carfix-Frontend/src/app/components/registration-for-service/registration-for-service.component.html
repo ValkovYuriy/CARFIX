@@ -1,0 +1,76 @@
+<!--<head>-->
+<!--  &lt;!&ndash;  <link href="https://fonts.googleapis.com/css?family=Karla:400,700&display=swap" rel="stylesheet">&ndash;&gt;-->
+<!--&lt;!&ndash;  <link rel="stylesheet" href="https://cdn.materialdesignicons.com/4.8.95/css/materialdesignicons.min.css">&ndash;&gt;-->
+<!--</head>-->
+<main class="my-5">
+  <div class="container">
+    <nz-steps [nzCurrent]="current" (nzIndexChange)="onIndexChange($event)">
+      <nz-step nzTitle="Личные данные"  nzIcon="user"></nz-step>
+      <nz-step nzTitle="Данные автомобиля"  nzIcon="car"></nz-step>
+      <nz-step nzTitle="Оформление"  nzIcon="check-circle"></nz-step>
+    </nz-steps>
+
+    <div id="fullContent" class="steps-content">
+      @switch (current) {
+        @case (0) {
+          <h4>Введите ваши личные данные</h4>
+          <div class="row w-100">
+            <div class="form-outline mb-3">
+              <label for="firstName" class="form-label">Имя</label>
+              <input id="firstName" type="text" name="firstName"
+                     class="form-control form-control-lg" [value]="decodedToken.firstName">
+            </div>
+            <div data-mdb-input-init class="form-outline mb-3">
+              <label for="lastName" class="form-label">Фамилия</label>
+              <input id="lastName" class="form-control form-control-lg" type="text" aria-label="Фамилия"
+                     [value]="decodedToken.lastName"/>
+            </div>
+            <div data-mdb-input-init class="form-outline mb-3">
+              <label for="phone-number" class="form-label">Номер телефона</label>
+              <input id="phone-number" mask="(000) 000-00-00" prefix="+7"
+                     [showMaskTyped]="true" type="text" name="phoneNumber" class="form-control form-control-lg"
+                     [(ngModel)]="formattedPhoneNumber">
+            </div>
+            <div data-mdb-input-init class="form-outline mb-3">
+              <label class="form-label" for="email">Адрес электронной почты</label>
+              <input type="email" id="email" name="username" class="form-control form-control-lg"
+                     placeholder="name@example.com" [value]="decodedToken.sub"/>
+              <div class="invalid-feedback">
+                Введите корректный email.
+              </div>
+            </div>
+          </div>
+        }
+        @case (1) {
+          <div class="w-100">
+            <app-car-data></app-car-data>
+          </div>
+        }
+        @case (2){
+          <div class="w-100">
+            <app-service-data></app-service-data>
+          </div>
+        }
+      }
+    </div>
+
+    <div class="d-flex steps-action">
+      @if (current > 0) {
+        <button nzSize="large" nz-button nzType="default" class="custom-btn back-btn" (click)="pre()">
+          <span>Назад</span>
+        </button>
+      }
+      @if (current < 2) {
+        <button nzSize="large" nz-button nzType="default" class="custom-btn next-btn" (click)="next()">
+          <span>Далее</span>
+        </button>
+      }
+      @if (current === 2) {
+        <button nzSize="large" nz-button nzType="primary" class="custom-btn submit-btn" (click)="done()">
+          <span>Отправить</span>
+        </button>
+      }
+      <button nz-button nzSize="large" routerLink="/"  class="custom-btn home-btn">Вернуться на главную</button>
+    </div>
+  </div>
+</main>

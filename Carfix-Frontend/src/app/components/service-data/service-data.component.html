@@ -1,0 +1,16 @@
+<div id="serv" style="font-size: 18px">
+  <h4>Введите данные для записи на обслуживание</h4>
+  <div class="mb-3">
+    <label for="description" class="form-label">Опишите проблему:</label>
+    <textarea id="description" name="description" rows="4" cols="50" class="form-control"></textarea>
+  </div>
+  <div class="mb-3">
+    <label for="service" class="form-label" >Выберите услуги:</label>
+    <select id="service" class="custom-select d-block w-100 js-choice" name="service" required multiple></select>
+  </div>
+  <div class="mb-3">
+    <label for="appointment-date">Дата и время записи</label>
+    <input class="form-control" type="datetime-local" id="appointment-date" name="appointment-date"
+           required>
+  </div>
+</div>

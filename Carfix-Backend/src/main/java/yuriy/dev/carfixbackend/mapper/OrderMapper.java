@@ -9,8 +9,10 @@ import yuriy.dev.carfixbackend.model.Order;
 public interface OrderMapper {
 
     @Mapping(source = "carDto",target = "car")
+    @Mapping(source = "userDto",target = "user")
     Order toOrder(OrderDto orderDto);
 
     @Mapping(source = "car", target = "carDto")
+    @Mapping(source = "user",target = "userDto")
     OrderDto toDto(Order order);
 }

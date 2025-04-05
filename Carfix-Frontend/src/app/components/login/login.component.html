@@ -17,18 +17,18 @@
                   <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Вход в аккаунт</h5>
 
                   <div data-mdb-input-init class="form-outline mb-4">
+                    <label class="form-label" for="email">Адрес электронной почты</label>
                     <input type="email" id="email" class="form-control form-control-lg" formControlName="email"
                            [ngClass]="{ 'is-invalid': signIn.get('email')?.invalid && signIn.get('email')?.touched }"/>
-                    <label class="form-label" for="email">Адрес электронной почты</label>
                     <div class="invalid-feedback">
                       Введите корректный email.
                     </div>
                   </div>
 
                   <div data-mdb-input-init class="form-outline mb-4">
+                    <label class="form-label" for="password">Пароль</label>
                     <input type="password" id="password" class="form-control form-control-lg" formControlName="password"
                            [ngClass]="{ 'is-invalid': signIn.get('password')?.invalid && signIn.get('password')?.touched }"/>
-                    <label class="form-label" for="password">Пароль</label>
                     <div class="invalid-feedback">
                       Пароль должен содержать минимум 4 символа.
                     </div>

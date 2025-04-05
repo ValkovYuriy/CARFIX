@@ -3,6 +3,10 @@
   color: bisque!important; /* Основной цвет текста */
 }
 
+.ant-steps-item-title {
+  color: bisque !important;
+}
+
 /* Переопределяем цвет текста для элементов с классом .text-muted */
 .text-bisque .text-muted {
   color: bisque; /* Задаем тот же цвет текста для элементов .text-muted */
@@ -174,6 +178,7 @@ app-header{
   }
 
 }
+
 
 
 
