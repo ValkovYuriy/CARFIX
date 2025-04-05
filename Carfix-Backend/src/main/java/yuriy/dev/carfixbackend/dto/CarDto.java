@@ -6,7 +6,6 @@ public record CarDto(
         UUID id,
         String govNumber,
         String vinNumber,
-        Integer yearOfRelease,
         ModelDto modelDto
 ) {
 }

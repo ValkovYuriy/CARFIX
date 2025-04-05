@@ -1,11 +1,13 @@
-import {Component, OnInit} from '@angular/core';
-import {Mark} from '../../model/Mark';
+import {Component, model, OnInit} from '@angular/core';
+import {Mark} from '../../../model/Mark';
 import {catchError, of} from 'rxjs';
-import {ApiResponse} from '../../model/ApiResponse';
-import {MarkService} from '../../services/MarkService/mark.service';
-import {Model} from '../../model/Model';
+import {ApiResponse} from '../../../model/ApiResponse';
+import {MarkService} from '../../../services/MarkService/mark.service';
+import {Model} from '../../../model/Model';
 import {NgForOf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
+import {Car} from '../../../model/Car';
+import {User} from '../../../model/User';
 
 @Component({
   selector: 'app-car-data',
@@ -19,15 +21,18 @@ import {FormsModule} from '@angular/forms';
 })
 export class CarDataComponent implements OnInit{
 
-  // Массив для хранения данных о марках автомобилей
+  car: { vinNumber: string; modelDto: Model | null; id: string | null; govNumber: string }  = {
+    id: null,
+    govNumber: '',
+    vinNumber: '',
+    modelDto: null
+  };
   marks: Mark[] = [];
 
-  // Выбранная марка автомобиля
   selectedBrand: string | null = null;
-
-  // Данные для выпадающего списка моделей
-  models: { value: string; label: string }[] = [];
   selectedModel: string | null = null;
+
+  models: { value: string; label: string }[] = [];
 
   constructor(private markService: MarkService) {}
 
@@ -52,7 +57,7 @@ export class CarDataComponent implements OnInit{
       const selectedMark = this.marks.find(mark => mark.markName === brand);
       if (selectedMark && selectedMark.models) {
         this.models = selectedMark.models.map((model: Model) => ({
-          value: model.modelName.toLowerCase(),
+          value: model.modelName,
           label: model.modelName
         }));
       }
@@ -61,5 +66,15 @@ export class CarDataComponent implements OnInit{
         { value: '', label: 'Сначала выберите марку...' }
       ];
     }
+  }
+
+  onModelChange(selectedModel: string | null){
+    this.car.modelDto = this.marks
+      .find(mark => mark.markName === this.selectedBrand)
+      ?.models.find(model => model.modelName === selectedModel) as Model | null;
+    }
+
+  getCarData(): Car {
+    return <Car>this.car;
   }
 }

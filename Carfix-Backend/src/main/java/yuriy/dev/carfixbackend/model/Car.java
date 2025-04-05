@@ -26,9 +26,6 @@ public class Car {
     @Column(name = "vin_number",unique = true)
     private String vinNumber;
 
-    @Column(name = "year_of_release")
-    private Integer yearOfRelease;
-
     @ManyToOne
     @JoinColumn(name = "model_id")
     private Model model;

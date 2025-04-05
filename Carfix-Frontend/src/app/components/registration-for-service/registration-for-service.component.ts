@@ -5,9 +5,18 @@ import {NzIconDirective, NzIconModule} from 'ng-zorro-antd/icon';
 import {NzButtonComponent} from 'ng-zorro-antd/button';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {NgxMaskDirective} from 'ngx-mask';
-import {CarDataComponent} from '../car-data/car-data.component';
-import {ServiceDataComponent} from '../service-data/service-data.component';
-import {RouterLink} from '@angular/router';
+import {CarDataComponent} from './car-data/car-data.component';
+import {ServiceDataComponent} from './service-data/service-data.component';
+import {Router, RouterLink} from '@angular/router';
+import {Order} from '../../model/Order';
+import {Car} from '../../model/Car';
+import {User} from '../../model/User';
+import {Status} from '../../model/Status';
+import {Work} from '../../model/Work';
+import Big from 'big.js';
+import {PersonalDataComponent} from './personal-data/personal-data.component';
+import {OrderService} from '../../services/OrderService/order.service';
+import {catchError, of} from 'rxjs';
 
 
 @Component({
@@ -23,25 +32,48 @@ import {RouterLink} from '@angular/router';
     CarDataComponent,
     ServiceDataComponent,
     FormsModule,
-    RouterLink
+    RouterLink,
+    PersonalDataComponent
   ],
   templateUrl: './registration-for-service.component.html',
   styleUrl: './registration-for-service.component.css',
 })
 export class RegistrationForServiceComponent implements OnInit {
 
-  decodedToken: any = null;
   current = 0;
   index = 'First-content';
-  formattedPhoneNumber: string | null = null;
+  order : {
+    works: Work[];
+    carDto: Car;
+    price: number;
+    description: string;
+    id: string | null;
+    userDto: User;
+    orderDate: Date;
+    status: Status
+  } = {
+    id: null,
+    carDto: {} as Car,
+    userDto: {} as User,
+    orderDate: new Date(),
+    price: 0,
+    status: 'PENDING' as Status,
+    description: '',
+    works: []
+};
 
-  constructor(private authService: AuthenticationService) {
+  @ViewChild(PersonalDataComponent) personalData!: PersonalDataComponent;
+  @ViewChild(CarDataComponent) carData!: CarDataComponent;
+  @ViewChild(ServiceDataComponent) serviceData!: ServiceDataComponent;
+
+
+  constructor(private authService: AuthenticationService,private orderService: OrderService, private router: Router) {
   }
 
   ngOnInit() {
-    this.decodedToken = this.authService.decodeToken();
-    this.formattedPhoneNumber = this.formatPhoneNumber(this.decodedToken.phoneNumber);
+
   }
+
 
   onIndexChange(current: number): void {
     this.current = current;
@@ -59,7 +91,24 @@ export class RegistrationForServiceComponent implements OnInit {
   }
 
   done(): void {
-    console.log('done');
+    const serviceData = this.serviceData.getServiceData();
+    this.order.orderDate = serviceData.orderDate;
+    this.order.description = serviceData.description;
+    this.order.works = serviceData.works;
+    this.order.price = 0;
+    this.order.works.forEach(work => {
+      this.order.price += work.workPrice;
+    })
+    console.log(this.order);
+    this.orderService.createOrder(this.order).pipe(
+      catchError(err => {
+        console.error("Произошла ошибка при сохранении заявки на обслуживание",err);
+        return of(null);
+      })
+    ).subscribe(response =>{
+      console.log(response);
+      this.router.navigate(['/']);
+    });
   }
 
   changeContent(): void {
@@ -68,25 +117,19 @@ export class RegistrationForServiceComponent implements OnInit {
         break;
       }
       case 1: {
+        this.order.userDto = this.personalData.getUserData();
         break;
       }
       case 2: {
+        this.order.carDto = this.carData.getCarData();
         break;
       }
       default: {
+
         this.index = 'error';
       }
     }
   }
 
-  formatPhoneNumber(phoneNumber: string): string {
-    // Удаляем префикс +7, если он есть
-    if (phoneNumber.startsWith('7')) {
-      phoneNumber = phoneNumber.substring(1);
-    }
-    // Преобразуем номер в формат (000) 000-00-00
-    const formattedNumber = `(${phoneNumber.substring(0, 3)}) ${phoneNumber.substring(3, 6)}-${phoneNumber.substring(6, 8)}-${phoneNumber.substring(8, 10)}`;
-    return formattedNumber;
-  }
 
 }

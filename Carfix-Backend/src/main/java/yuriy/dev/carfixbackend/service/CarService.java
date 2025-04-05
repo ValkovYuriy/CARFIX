@@ -37,7 +37,6 @@ public class CarService {
         if (car != null) {
             car.setGovNumber(carDto.govNumber());
             car.setVinNumber(carDto.vinNumber());
-            car.setYearOfRelease(carDto.yearOfRelease());
             updatedCar =  carMapper.toCarDto(carRepository.save(car));
         }
         return updatedCar;

@@ -6,5 +6,5 @@ export interface Work{
   name: string; // String
   description: string; // String
   imageUrl: string; // String
-  workPrice: Big; // Вложенный объект WorkPriceDto
+  workPrice: number; // Вложенный объект WorkPriceDto
 }

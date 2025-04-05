@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import yuriy.dev.carfixbackend.dto.OrderDto;
 import yuriy.dev.carfixbackend.mapper.CarMapper;
 import yuriy.dev.carfixbackend.mapper.OrderMapper;
+import yuriy.dev.carfixbackend.model.Car;
 import yuriy.dev.carfixbackend.model.Order;
 import yuriy.dev.carfixbackend.model.Work;
 import yuriy.dev.carfixbackend.repository.CarRepository;
@@ -30,7 +31,7 @@ public class OrderService {
     private final WorkRepository workRepository;
     private final CarRepository carRepository;
 
-    public List<OrderDto> findAllOrders(){
+    public List<OrderDto> findAllOrders() {
         List<Work> works = workRepository.findAllWorksWithPricesForEveryOrder();
         List<Order> orders = orderRepository.findAll();
         Map<UUID, Work> workById = works.stream()
@@ -46,16 +47,22 @@ public class OrderService {
         return orders.stream().map(orderMapper::toDto).toList();
     }
 
-    public OrderDto addOrder(OrderDto orderDto){
+    public OrderDto addOrder(OrderDto orderDto) {
         Order order = orderMapper.toOrder(orderDto);
-        carRepository.findByVinNumber(orderDto.carDto().vinNumber()).ifPresentOrElse(order::setCar, () -> orderRepository.save(order));
+        Car car = carRepository.findByVinNumber(orderDto.carDto().vinNumber()).orElse(null);
+        if (car != null) {
+            order.setCar(car);
+        } else {
+            Car savedCar = carRepository.save(carMapper.toCar(orderDto.carDto()));
+            order.setCar(savedCar);
+        }
         return orderMapper.toDto(orderRepository.save(order));
     }
 
-    public OrderDto updateOrder(UUID id, OrderDto orderDto){
+    public OrderDto updateOrder(UUID id, OrderDto orderDto) {
         Order order = orderRepository.findById(id).orElse(null);
         Order updatedOrder = null;
-        if(order != null){
+        if (order != null) {
             order.setPrice(orderDto.price());
             order.setOrderDate(orderDto.orderDate());
             order.setStatus(orderDto.status());
@@ -65,11 +72,11 @@ public class OrderService {
         return orderMapper.toDto(updatedOrder);
     }
 
-    public void deleteOrder(UUID id){
+    public void deleteOrder(UUID id) {
         orderRepository.deleteById(id);
     }
 
-    public OrderDto findOrderById(UUID id){
+    public OrderDto findOrderById(UUID id) {
         return orderRepository.findById(id).map(orderMapper::toDto).orElse(null);
     }
 }

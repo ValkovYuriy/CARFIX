@@ -1,16 +1,16 @@
-<div id="carData" class="w-100" style="font-size: 18px">
+<div id="carData" style="font-size: 18px">
   <h4>Введите данные вашего автомобиля</h4>
   <div class="row w-100">
     <div data-mdb-input-init class="form-outline mb-3">
       <label for="vin" class="form-label">VIN-номер</label>
-      <input type="text" class="form-control form-control-lg" id="vin" required minlength="17">
+      <input type="text" class="form-control form-control-lg" id="vin" required minlength="17" [(ngModel)]="car.vinNumber">
       <div class="invalid-feedback">
         Обязательно введите VIN-номер.
       </div>
     </div>
     <div data-mdb-input-init class="form-outline mb-3">
       <label for="gos">Государственный номер</label>
-      <input type="text" class="form-control form-control-lg" id="gos" placeholder="" required minlength="6">
+      <input type="text" class="form-control form-control-lg" id="gos" placeholder="" required minlength="6" [(ngModel)]="car.govNumber">
       <div class="invalid-feedback">
         Обязательно введите государственный номер.
       </div>
@@ -29,7 +29,7 @@
     </div>
     <div data-mdb-input-init class="form-outline mb-3">
       <label for="car-model">Модель автомобиля</label>
-      <select class="custom-select d-block w-100" id="car-model" [(ngModel)]="models" [disabled]="!selectedBrand">
+      <select class="custom-select d-block w-100" id="car-model" [(ngModel)]="selectedModel" [disabled]="!selectedBrand" (change)="onModelChange(selectedModel)">
         <option value="" disabled hidden>{{ selectedBrand ? 'Выберите модель...' : 'Сначала выберите марку' }}</option>
         <option *ngFor="let model of models" [value]="model.value">{{ model.label }}</option>
       </select>
