@@ -19,10 +19,11 @@ public class OrderController {
     private final OrderService orderService;
     
     @GetMapping
-    public ResponseEntity<ApiResponseDto<List<OrderDto>>> findAllOrders(){
-        List<OrderDto> list = orderService.findAllOrders();
+    public ResponseEntity<ApiResponseDto<List<OrderDto>>> findAllOrders(@RequestParam(required = false) UUID userId){
+        List<OrderDto> list = orderService.findAllOrders(userId);
         return ResponseEntity.ok(new ApiResponseDto<>("ok",list));
     }
+
     
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponseDto<OrderDto>> findOrderById(@PathVariable UUID id){

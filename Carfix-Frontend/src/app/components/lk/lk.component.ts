@@ -1,28 +1,39 @@
-import {Component, HostListener, OnInit} from '@angular/core';
-import {NgClass} from '@angular/common';
+import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
+import {NgClass, NgOptimizedImage} from '@angular/common';
+import {EditProfileComponent} from './edit-profile/edit-profile.component';
+import {OrdersComponent} from './orders/orders.component';
 
 @Component({
   selector: 'app-lk',
   standalone: true,
   imports: [
-    NgClass
+    NgClass,
+    NgOptimizedImage,
+    EditProfileComponent,
+    OrdersComponent
   ],
   templateUrl: './lk.component.html',
   styleUrl: './lk.component.css'
 })
 export class LkComponent implements OnInit{
+  @ViewChild(EditProfileComponent) editProfile!: ElementRef;
+  @ViewChild(OrdersComponent) ordersComponent!: ElementRef;
   isSidebarActive: boolean = false;
+  currentContent: number = 0;
 
   ngOnInit() {
     this.setFullHeight();
   }
 
-  // Метод для переключения активности сайдбара
+  changeContent(currentContent: number){
+   this.currentContent = currentContent;
+  }
+
+
   toggleSidebar() {
     this.isSidebarActive = !this.isSidebarActive;
   }
 
-  // Устанавливаем высоту сайдбара
   setFullHeight() {
     const sidebar = document.getElementById('sidebar');
     if (sidebar) {

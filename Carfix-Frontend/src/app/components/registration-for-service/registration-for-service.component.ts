@@ -28,7 +28,6 @@ import {catchError, of} from 'rxjs';
     NzStepComponent,
     NzButtonComponent,
     ReactiveFormsModule,
-    NgxMaskDirective,
     CarDataComponent,
     ServiceDataComponent,
     FormsModule,

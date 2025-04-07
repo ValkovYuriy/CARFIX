@@ -12,6 +12,10 @@ export class OrderService {
 
   constructor(private httpClient: HttpClient) { }
 
+  findAllOrders(userId: string){
+    return this.httpClient.get<any>(`${this.baseUrl}/orders?userid=${userId}`)
+  }
+
   createOrder(order: Order){
     return this.httpClient.post<any>(`${this.baseUrl}/orders`,order);
   }

@@ -9,6 +9,7 @@ import { provideNzIcons } from 'ng-zorro-antd/icon';
 import { UserOutline, CarOutline, CheckCircleOutline } from '@ant-design/icons-angular/icons';
 
 import {provideImgixLoader} from '@angular/common';
+import {TooltipModule} from 'ngx-bootstrap/tooltip';
 
 export const appConfig: ApplicationConfig = {
   providers: [

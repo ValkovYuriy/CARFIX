@@ -1,0 +1,97 @@
+<div class="d-flex modal-header">
+  <h5 class="modal-title" id="exampleModalLabel">Детали заказа</h5>
+  <button style="margin-left: auto" type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="bsModalRef.hide()">
+    <span aria-hidden="true"><i class="fa fa-close"></i></span>
+  </button>
+</div>
+@if (order) {
+  <div class="modal-body">
+    <!-- Основная информация -->
+    <div class="mb-3">
+      <h6 class="text-center">Основная информация</h6>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="d-flex flex-column">
+            <span class="heading d-block">Стоимость</span>
+            <span class="subheadings" >{{ order.price }} ₽</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="d-flex flex-column">
+            <span class="heading d-block">Дата и время заказа</span>
+            <span class="subheadings">{{ order.orderDate | date: 'dd/MM/yyyy hh:mm:ss' }}</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="d-flex flex-column">
+            <span class="heading d-block">Статус</span>
+            <span class="subheadings">
+            @switch (order.status) {
+              @case ('PENDING') {
+                <i class="fas fa-circle text-warning"></i><span> В обработке</span>
+              }
+              @case ('ACCEPTED') {
+                <i class="fas fa-circle text-success"></i><span> Подтвержден</span>
+              }
+              @case ('REJECTED') {
+                <i class="fas fa-circle text-danger"></i><span> Отклонен</span>
+              }
+            }
+          </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Информация об автомобиле -->
+    <div class="mb-3">
+      <h6 class="text-center">Информация об автомобиле</h6>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="d-flex flex-column">
+            <span class="heading d-block">Марка</span>
+            <span class="subheadings">{{ order.carDto.modelDto?.mark?.markName }}</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="d-flex flex-column">
+            <span class="heading d-block">Модель</span>
+            <span class="subheadings">{{ order.carDto.modelDto?.modelName }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Информация о клиенте -->
+    <div class="mb-3">
+      <h6 class="text-center">Информация о клиенте</h6>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="d-flex flex-column">
+            <span class="heading d-block">Имя</span>
+            <span class="subheadings">{{ order.userDto.firstName }}</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="d-flex flex-column">
+            <span class="heading d-block">Фамилия</span>
+            <span class="subheadings">{{ order.userDto.lastName }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Выполненные работы -->
+    <div class="mb-3">
+      <h6 class="text-center">Выполненные работы</h6>
+      <ul>
+        <li *ngFor="let work of order?.works">
+          <p><span class="heading d-block">{{ work.name }}</span> - {{ work.workPrice }} ₽</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+
+}

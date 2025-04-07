@@ -9,13 +9,14 @@ import {ApiResponse} from './model/ApiResponse';
 import * as serviceDetails from './shared/js/services.js'
 import {AuthenticationService} from './services/AuthenticationService/authentication.service';
 import {NgOptimizedImage} from '@angular/common';
+import {TooltipModule} from 'ngx-bootstrap/tooltip';
 
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, NgOptimizedImage],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, NgOptimizedImage,TooltipModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

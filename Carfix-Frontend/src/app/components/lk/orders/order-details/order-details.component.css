@@ -1,0 +1,76 @@
+body{
+
+  font-family: 'Quicksand', sans-serif;
+  background: #eee;
+}
+
+
+
+.close:focus{
+
+  outline: 1px dotted #fff !important;
+}
+
+.modal-body {
+
+  padding: 1rem !important;
+}
+
+.modal-title{
+
+  color: #fff;
+}
+
+.modal-header{
+  background: #0a4653;
+  color: #fff !important;
+}
+
+.fa-close{
+  color: #fff;
+}
+
+.heading{
+  font-size: 16px;
+  font-weight: 500 !important;
+}
+
+.subheadings{
+  font-size: 14px;
+  color: #0a4653;
+}
+
+
+.dots {
+  height: 10px;
+  width: 10px;
+  background-color: green;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.gallery img{
+
+  margin-right: 10px;
+}
+
+.fs-9{
+  font-size: 9px;
+}
+
+.bg-success{
+  background-color: #57ff60;
+}
+.bg-warning{
+  background-color: #ffe395;
+}
+.bg-danger{
+  background-color: #ff2835;
+}
+
+.text-center {
+  text-align: center;
+  background-color: #f8f9fa; /* Легкий серый фон для заголовков */
+  font-weight: bold;
+}

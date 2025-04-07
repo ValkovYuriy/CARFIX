@@ -31,9 +31,17 @@ public class OrderService {
     private final WorkRepository workRepository;
     private final CarRepository carRepository;
 
-    public List<OrderDto> findAllOrders() {
+    public List<OrderDto> findAllOrders(UUID userId) {
         List<Work> works = workRepository.findAllWorksWithPricesForEveryOrder();
-        List<Order> orders = orderRepository.findAll();
+        List<Order> orders = userId == null ? orderRepository.findAll() : orderRepository
+                .findAll()
+                .stream()
+                .filter(order -> order.getUser().getId().equals(userId))
+                .toList();;
+        return getOrderDtos(works, orders);
+    }
+
+    private List<OrderDto> getOrderDtos(List<Work> works, List<Order> orders) {
         Map<UUID, Work> workById = works.stream()
                 .collect(Collectors.toMap(Work::getId, work -> work));
         orders.stream()

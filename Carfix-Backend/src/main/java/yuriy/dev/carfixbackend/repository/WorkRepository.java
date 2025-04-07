@@ -29,7 +29,5 @@ public interface WorkRepository extends JpaRepository<Work, UUID> {
             "AND w.id IN (SELECT ow.id FROM Order o JOIN o.works ow )")
     List<Work> findAllWorksWithPricesForEveryOrder();
 
-//    @Query("select new Work(w.id,w.name,w.description,wp.price,w.imageUrl) from Work w join WorkPrice wp on w.id = wp.work.id " +
-//            "where wp.date = (SELECT MAX(wp2.date) from WorkPrice wp2 where wp2.work.id = w.id) and w.id in :ids")
-//    List<Work> findAllWithIds(List<UUID> ids);
+
 }

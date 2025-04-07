@@ -27,7 +27,6 @@ CREATE TABLE IF NOT EXISTS car(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     gov_number VARCHAR(10) UNIQUE,
     vin_number VARCHAR(17) UNIQUE,
-	year_of_release INT CHECK ( year_of_release > 1900 and year_of_release < 2026),
 	model_id UUID REFERENCES model(id)
 );
 CREATE TABLE IF NOT EXISTS work(
@@ -38,9 +37,11 @@ CREATE TABLE IF NOT EXISTS work(
 );
 CREATE TABLE IF NOT EXISTS "order"(
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    car_id UUID REFERENCES car(id),
-    user_id UUID REFERENCES "user"(id),
-    order_date TIMESTAMP,
+    car_id UUID REFERENCES car(id) NOT NULL,
+    user_id UUID REFERENCES "user"(id) NOT NULL,
+    order_date TIMESTAMP NOT NULL,
+    status VARCHAR(10) CHECK (status IN ('PENDING','ACCEPTED','REJECTED')),
+    description VARCHAR(1000),
     price NUMERIC
 );
 CREATE TABLE IF NOT EXISTS work_price(
