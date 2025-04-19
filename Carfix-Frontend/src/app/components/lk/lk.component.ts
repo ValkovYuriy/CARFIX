@@ -2,6 +2,9 @@ import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} f
 import {NgClass, NgOptimizedImage} from '@angular/common';
 import {EditProfileComponent} from './edit-profile/edit-profile.component';
 import {OrdersComponent} from './orders/orders.component';
+import {AuthenticationService} from '../../services/AuthenticationService/authentication.service';
+import {WorksComponent} from './works/works.component';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-lk',
@@ -10,7 +13,9 @@ import {OrdersComponent} from './orders/orders.component';
     NgClass,
     NgOptimizedImage,
     EditProfileComponent,
-    OrdersComponent
+    OrdersComponent,
+    WorksComponent,
+    RouterLink
   ],
   templateUrl: './lk.component.html',
   styleUrl: './lk.component.css'
@@ -18,12 +23,17 @@ import {OrdersComponent} from './orders/orders.component';
 export class LkComponent implements OnInit{
   @ViewChild(EditProfileComponent) editProfile!: ElementRef;
   @ViewChild(OrdersComponent) ordersComponent!: ElementRef;
+  @ViewChild(WorksComponent) worksComponent!:ElementRef;
   isSidebarActive: boolean = false;
   currentContent: number = 0;
 
   ngOnInit() {
     this.setFullHeight();
   }
+
+  constructor(protected authService: AuthenticationService) {
+  }
+
 
   changeContent(currentContent: number){
    this.currentContent = currentContent;

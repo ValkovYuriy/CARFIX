@@ -8,8 +8,7 @@ import {DatePipe, NgForOf, NgIf} from '@angular/common';
   standalone: true,
   imports: [
     DatePipe,
-    NgForOf,
-    NgIf
+    NgForOf
   ],
   templateUrl: './order-details.component.html',
   styleUrl: './order-details.component.css'

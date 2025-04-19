@@ -8,4 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface WorkPriceRepository extends JpaRepository<WorkPrice, UUID> {
+
+    void deleteAllByWorkId(UUID workId);
 }

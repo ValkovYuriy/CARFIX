@@ -1,0 +1,32 @@
+<div id="works">
+  <div class="container mt-4">
+    <h2 class="mb-4">Список услуг</h2>
+    <table class="table table-bordered">
+      <thead class="thead-dark">
+      <tr>
+        <th>Услуга</th>
+        <th>Описание</th>
+        <th>Цена</th>
+        <th>URL Адрес картинки</th>
+        <th>Действия</th>
+      </tr>
+      </thead>
+      <tbody id="customer-list">
+        @for(work of works() ; track work.id){
+          <tr>
+            <td>{{work.name}}</td>
+            <td>{{work.description}}</td>
+            <td>{{work.workPrice}} ₽</td>
+            <td>{{work.imageUrl}}</td>
+            <td>
+              <!-- Иконки действий -->
+              <i class="fas fa-plus action-icon"></i>
+              <i class="fas fa-edit action-icon" (click)="showWorkDetails(work)"></i>
+              <i class="fas fa-trash action-icon" (click)="deleteWork(work.id)"></i>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

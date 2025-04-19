@@ -1,0 +1,14 @@
+/* Высокий рейтинг */
+.high-rating {
+  background-color: #e6ffe6; /* Светло-зеленый */
+}
+
+/* Средний рейтинг */
+.medium-rating {
+  background-color: #fff3cd; /* Светло-желтый */
+}
+
+/* Низкий рейтинг */
+.low-rating {
+  background-color: #f8d7da; /* Светло-красный */
+}

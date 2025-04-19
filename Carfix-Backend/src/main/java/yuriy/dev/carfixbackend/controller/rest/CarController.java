@@ -28,26 +28,26 @@ public class CarController {
     @GetMapping
     public ResponseEntity<ApiResponseDto<List<CarDto>>> findAllCars() {
         List<CarDto> cars = carService.findAllCars();
-        return ResponseEntity.ok(new ApiResponseDto<>("ok",cars));
+        return ResponseEntity.ok(new ApiResponseDto<>("OK",cars));
     }
 
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponseDto<CarDto>> findCarById(@PathVariable UUID id) {
         CarDto car = carService.findCarById(id);
-        return ResponseEntity.ok(new ApiResponseDto<>("ok",car));
+        return ResponseEntity.ok(new ApiResponseDto<>("OK",car));
     }
 
     @PostMapping
     public ResponseEntity<ApiResponseDto<CarDto>> addCar(@RequestBody CarDto carDto) {
         CarDto car = carService.addCar(carDto);
-        return ResponseEntity.ok(new ApiResponseDto<>("ok",car));
+        return ResponseEntity.ok(new ApiResponseDto<>("OK",car));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponseDto<CarDto>> updateCar(@PathVariable UUID id, @RequestBody CarDto carDto) {
         CarDto car = carService.updateCar(id,carDto);
-        return ResponseEntity.ok(new ApiResponseDto<>("ok",car));
+        return ResponseEntity.ok(new ApiResponseDto<>("OK",car));
     }
 
     @DeleteMapping("/{id}")

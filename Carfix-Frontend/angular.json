@@ -35,7 +35,8 @@
               "node_modules/material-icons/css/material-icons.min.css",
               "node_modules/jquery-steps/demo/css/jquery.steps.css",
               "node_modules/choices.js/public/assets/styles/choices.min.css",
-              "node_modules/ng-zorro-antd/ng-zorro-antd.min.css"
+              "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
+              "node_modules/ngx-bar-rating/themes/br-stars-theme.scss"
             ],
             "scripts": [
               "node_modules/@popperjs/core/dist/umd/popper.min.js",

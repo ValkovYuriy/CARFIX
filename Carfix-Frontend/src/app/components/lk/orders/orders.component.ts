@@ -48,6 +48,6 @@ export class OrdersComponent implements OnInit{
       order: order
     };
     this.bsModalRef = this.modalService.show(OrderDetailsComponent,{initialState,class: 'modal-dialog-centered'} as any);
-    // this.bsModalRef.content = order;
+
   }
 }

@@ -17,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import yuriy.dev.carfixbackend.service.CustomUserDetailService;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     public static final String BEARER_PREFIX = "Bearer ";
     public static final String HEADER_NAME = "Authorization";
+    private static final List<String> OPEN_ROUTES = List.of("/api/works");
 
 
     private final JwtUtil jwtUtil;
@@ -32,6 +34,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
+
+        String path = request.getRequestURI();
+        if (OPEN_ROUTES.stream().anyMatch(path::startsWith) && request.getMethod().equals("GET")) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         // Получаем токен из заголовка
         var authHeader = request.getHeader(HEADER_NAME);

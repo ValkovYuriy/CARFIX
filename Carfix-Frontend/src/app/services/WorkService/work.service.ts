@@ -22,6 +22,14 @@ export class WorkService {
   constructor(private httpClient: HttpClient) { }
 
   getWorks(){
-    return this.httpClient.get<ApiResponse<Work[]>>(`${this.baseUrl}/works`)
+    return this.httpClient.get<ApiResponse<Work[]>>(`${this.baseUrl}/works`);
+  }
+
+  updateWork(id: string, work: Work){
+    return this.httpClient.put<any>(`${this.baseUrl}/works/${id}`,work);
+  }
+
+  deleteWork(id: string){
+    return this.httpClient.delete<any>(`${this.baseUrl}/works/${id}`);
   }
 }

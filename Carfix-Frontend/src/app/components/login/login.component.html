@@ -20,18 +20,42 @@
                     <label class="form-label" for="email">Адрес электронной почты</label>
                     <input type="email" id="email" class="form-control form-control-lg" formControlName="email"
                            [ngClass]="{ 'is-invalid': signIn.get('email')?.invalid && signIn.get('email')?.touched }"/>
-                    <div class="invalid-feedback">
-                      Введите корректный email.
-                    </div>
+                    @if (signIn.get('email')?.errors?.['required']) {
+                      <div class="invalid-feedback">
+                        Адрес электронной почты обязателен для заполнения.
+                      </div>
+                    } @else if (signIn.get('email')?.errors?.['email']){
+                      <div class="invalid-feedback">
+                        Введите корректный адрес электронной почты
+                      </div>
+                    } @else if (signIn.get('email')?.errors?.['minlength']) {
+                      <div class="invalid-feedback">
+                        Адрес электронной почты должен содержать минимум 5 символов.
+                      </div>
+                    } @else if (signIn.get('email')?.errors?.['maxlength']) {
+                      <div class="invalid-feedback">
+                        Адрес электронной почты должен содержать не более 50 символов.
+                      </div>
+                    }
                   </div>
 
                   <div data-mdb-input-init class="form-outline mb-4">
                     <label class="form-label" for="password">Пароль</label>
                     <input type="password" id="password" class="form-control form-control-lg" formControlName="password"
                            [ngClass]="{ 'is-invalid': signIn.get('password')?.invalid && signIn.get('password')?.touched }"/>
-                    <div class="invalid-feedback">
-                      Пароль должен содержать минимум 4 символа.
-                    </div>
+                    @if (signIn.get('password')?.errors?.['required']) {
+                      <div class="invalid-feedback">
+                        Пароль обязателен для заполнения.
+                      </div>
+                    } @else if (signIn.get('password')?.errors?.['minlength']) {
+                      <div class="invalid-feedback">
+                        Пароль должен содержать минимум 4 символа.
+                      </div>
+                    } @else if (signIn.get('password')?.errors?.['maxlength']) {
+                      <div class="invalid-feedback">
+                        Пароль должен содержать не более 30 символов.
+                      </div>
+                    }
                   </div>
 
                   @if(errorMessage){

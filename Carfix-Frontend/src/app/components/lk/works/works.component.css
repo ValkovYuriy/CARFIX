@@ -1,0 +1,37 @@
+/* Установка ширины столбцов */
+.table thead th {
+  white-space: nowrap; /* Не разрывать заголовки */
+}
+
+.table td {
+  word-wrap: break-word; /* Разрешить перенос строк в ячейках */
+}
+
+/* Ширина столбцов */
+.table td:nth-child(1) { /* Услуга */
+  width: 15%; /* Можно настроить */
+}
+.table td:nth-child(2) { /* Описание */
+  width: 30%; /* Длинное описание */
+}
+.table td:nth-child(3) { /* Цена */
+  width: 10%; /* Короткое значение */
+}
+.table td:nth-child(4) { /* URL Адрес картинки */
+  width: 30%; /* Длинная ссылка */
+}
+.table td:nth-child(5) { /* Действия */
+  width: 15%; /* Иконки */
+}
+
+/* Увеличение размера иконок */
+.action-icon {
+  cursor: pointer;
+  font-size: 20px; /* Увеличение размера иконок */
+  margin-right: 10px; /* Отступ между иконками */
+}
+
+/* Последняя иконка не должна иметь правого отступа */
+.action-icon:last-child {
+  margin-right: 0;
+}

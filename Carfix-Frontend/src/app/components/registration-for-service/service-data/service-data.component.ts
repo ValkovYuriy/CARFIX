@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import Choices from 'choices.js';
 import {Work} from '../../../model/Work';
 import {WorkService} from '../../../services/WorkService/work.service';
@@ -15,16 +15,115 @@ import {FormsModule} from '@angular/forms';
   templateUrl: './service-data.component.html',
   styleUrl: './service-data.component.css'
 })
-export class ServiceDataComponent implements OnInit{
+export class ServiceDataComponent implements OnInit,OnDestroy {
 
   works: Work[] | null = null;
 
   selectedWorks: string[] = [];
 
-  serviceData : {works: Work[], description: string, orderDate: Date} = {works: [], description: '', orderDate: new Date()};
+  serviceData: { works: Work[], description: string, orderDate: Date } = {
+    works: [],
+    description: '',
+    orderDate: new Date()
+  };
+  @ViewChild('descriptionInput') textarea!: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('microIcon') microIcon!: ElementRef<HTMLElement>;
+  recognition: any;
+  isListening = false;
+
 
   constructor(private workService: WorkService) {
+    this.initRecognition();
   }
+
+  initRecognition() {
+    const SpeechRecognition = (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      console.error('Браузер не поддерживает Web Speech API');
+      return;
+    }
+
+    this.recognition = new SpeechRecognition();
+    this.recognition.continuous = true;
+    this.recognition.interimResults = true;
+    this.recognition.lang = 'ru-RU';
+
+    this.recognition.onstart = () => {
+      console.log('Распознавание начато');
+      this.isListening = true;
+    };
+
+    this.recognition.onresult = (event: any) => {
+      let interim = '';
+      let final = '';
+
+      for (let i = 0; i < event.results.length; i++) {
+        // Добавляем проверку на существование результата
+        if (!event?.results[i] || !event?.results[i][0]) {
+          continue;
+        }
+
+        const transcript = event?.results[i][0].transcript;
+        if (event?.results[i].isFinal) {
+          final += transcript + ' '; // Добавляем пробел между фразами
+        } else {
+          interim += transcript;
+        }
+      }
+
+      // Обновляем текст, отдавая приоритет финальным результатам
+      this.serviceData.description = final.trim() || interim;
+    };
+    this.recognition.onerror = (event: any) => {
+      console.error('Ошибка распознавания:', event.error);
+      this.isListening = false;
+    };
+
+    this.recognition.onend = () => {
+      console.log('Распознавание завершено');
+      this.isListening = false;
+    };
+
+  }
+
+
+
+  toggleVoiceRecognition() {
+    if (this.isListening) {
+      this.stopRecognition();
+    } else {
+      this.startRecognition();
+    }
+  }
+
+  startRecognition() {
+    if (!this.recognition) {
+      this.initRecognition();
+    }
+
+    try {
+      this.recognition.start();
+      console.log('Попытка запуска распознавания');
+    } catch (e) {
+      console.error('Ошибка при запуске:', e);
+      // Попробуем снова через небольшой интервал
+      setTimeout(() => this.recognition.start(), 100);
+    }
+  }
+
+  stopRecognition() {
+    if (this.recognition) {
+      this.recognition.stop();
+    }
+    this.isListening = false;
+  }
+
+  ngOnDestroy() {
+    this.stopRecognition();
+  }
+
 
   ngOnInit() {
     this.initializeChoices();
@@ -43,8 +142,8 @@ export class ServiceDataComponent implements OnInit{
       });
       this.workService.getWorks().pipe(
         catchError(err => {
-          console.error("Ошибка при загрузке услуг",err);
-          return of({ message: 'Ошибка', data: [] } as ApiResponse<Work[]>);
+          console.error("Ошибка при загрузке услуг", err);
+          return of({message: 'Ошибка', data: []} as ApiResponse<Work[]>);
         })
       ).subscribe(
         response => {
@@ -69,7 +168,7 @@ export class ServiceDataComponent implements OnInit{
     }
   }
 
-  getServiceData(){
+  getServiceData() {
     this.serviceData.works = this.getSelectedWorks();
     return this.serviceData;
   }
@@ -77,5 +176,6 @@ export class ServiceDataComponent implements OnInit{
   getSelectedWorks(): Work[] {
     return this.works ? this.works.filter(work => this.selectedWorks.includes(work.name)) : [];
   }
+
 
 }

@@ -36,7 +36,6 @@ public class SecurityConfig {
     private final JwtRequestFilter jwtRequestFilter;
 
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
@@ -44,10 +43,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/auth/*").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "api/orders").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.POST,"/api/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT,"/api/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE,"/api/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/orders").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST,"/api/works", "/api/work-prices","/api/marks","/api/models").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"/api/works").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/api/works").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .logout((logout) -> logout

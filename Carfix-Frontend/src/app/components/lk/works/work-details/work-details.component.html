@@ -1,0 +1,34 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="editServiceModalLabel">Редактирование услуги</h5>
+<!--  <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--    <span aria-hidden="true">&times;</span>-->
+<!--  </button>-->
+</div>
+@if(work){
+  <div class="modal-body">
+    <form [formGroup]="editWork"  id="editServiceForm">
+      <div class="form-group">
+        <label for="serviceName">Название услуги</label>
+        <input type="text" class="form-control" id="serviceName" formControlName="name" required>
+      </div>
+      <div class="form-group">
+        <label for="serviceDescription">Описание</label>
+        <textarea class="form-control" id="serviceDescription" formControlName="description" rows="3" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="servicePrice">Цена</label>
+        <input type="number" class="form-control" id="servicePrice" formControlName="workPrice" step="1" required>
+      </div>
+      <div class="form-group">
+        <label for="serviceImageUrl">URL Адрес картинки</label>
+        <input type="text" class="form-control" id="serviceImageUrl" formControlName="imageUrl" required>
+      </div>
+    </form>
+  </div>
+<div class="modal-footer">
+  <button (click)="bsModalRef.hide()" type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+  <button (click)="saveEditedWork(work.id)" type="submit" class="btn btn-primary" >Сохранить изменения</button>
+</div>
+}
+
+

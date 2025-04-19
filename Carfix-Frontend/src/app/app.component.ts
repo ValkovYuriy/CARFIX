@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, inject, Input, OnInit, signal} from '@angular/core';
-import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
+import {NavigationEnd, Router, RouterLink, RouterOutlet} from '@angular/router';
 import {HeaderComponent} from './components/header/header.component';
 import {FooterComponent} from './components/footer/footer.component';
 import {Work} from './model/Work';
@@ -10,13 +10,14 @@ import * as serviceDetails from './shared/js/services.js'
 import {AuthenticationService} from './services/AuthenticationService/authentication.service';
 import {NgOptimizedImage} from '@angular/common';
 import {TooltipModule} from 'ngx-bootstrap/tooltip';
+import {YandexMapComponent} from './components/yandex-map/yandex-map.component';
 
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, NgOptimizedImage,TooltipModule],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, NgOptimizedImage, TooltipModule, YandexMapComponent, RouterLink],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

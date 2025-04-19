@@ -23,18 +23,24 @@
     </div>
     <ul class="list-unstyled components mb-5" style="padding-left: 10px">
       <li>
-        <a href="/"><span class="fa fa-home mr-3" style="font-size: 24px; cursor: pointer"></span>Главная</a>
+        <a routerLink="/"><span class="fa fa-home mr-3" style="font-size: 24px; cursor: pointer"></span>Главная</a>
       </li>
+      @if(authService.isAdmin()){
+        <li>
+          <a (click)="changeContent(1)"><span class="fa fa-wrench mr-3" style="font-size: 24px; cursor: pointer"></span>Управление услугами</a>
+        </li>
+      } @else {
+        <li>
+          <a (click)="changeContent(2)"><span class="fa fa-user mr-3" style="font-size: 24px; cursor: pointer"></span>Редактировать
+            профиль</a>
+        </li>
+        <li>
+          <a (click)="changeContent(3)"><span class="fa-solid fa-list mr-3"
+                                              style="font-size: 24px; cursor: pointer"></span>История обслуживания</a>
+        </li>
+      }
       <li>
-        <a (click)="changeContent(1)"><span class="fa fa-user mr-3" style="font-size: 24px; cursor: pointer"></span>Редактировать
-          профиль</a>
-      </li>
-      <li>
-        <a (click)="changeContent(2)"><span class="fa-solid fa-list mr-3"
-                                      style="font-size: 24px; cursor: pointer"></span>История обслуживания</a>
-      </li>
-      <li>
-        <a href="/logout"><span class="fa-solid fa-right-from-bracket mr-3" style="font-size: 24px; cursor: pointer"></span>Выйти</a>
+        <a routerLink="/login"><span class="fa-solid fa-right-from-bracket mr-3" style="font-size: 24px; cursor: pointer"></span>Выйти</a>
       </li>
     </ul>
   </nav>
@@ -44,26 +50,18 @@
     <div #content id="content" class="p-4 p-md-5 pt-5">
       @switch (currentContent){
         @case (1){
-          <app-edit-profile></app-edit-profile>
+          <app-works></app-works>
         }
         @case (2){
+          <app-edit-profile></app-edit-profile>
+        }
+        @case (3){
           <app-orders></app-orders>
         }
       }
     </div>
   </div>
 </div>
-<!--<script src="/js/jquery.min.js"></script>-->
-<!--<script src="/js/popper.js"></script>-->
-<!--<script src="/js/bootstrap.min.js"></script>-->
-<!--<script src="/js/main.js"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
-<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>-->
-<!--<script src="https://unpkg.com/imask"></script>-->
-<!--<script src="/js/sidebar-navigation.js"></script>-->
-<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>-->
-<!--<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>-->
-<!--<script src="/js/profile.js"></script>-->
 </body>
 </html>
 

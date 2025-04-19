@@ -47,6 +47,11 @@ export class AuthenticationService {
     return this.decodedToken;
   }
 
+  isAdmin(){
+    this.decodedToken = this.decodeToken();
+    return this.decodedToken.role === 'ROLE_ADMIN'
+  }
+
   isTokenValid() {
     const token = this.token;
     if (!token) {

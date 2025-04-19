@@ -3,6 +3,6 @@ import {AuthenticationService} from '../services/AuthenticationService/authentic
 import {inject} from '@angular/core';
 
 export const authGuard: CanActivateFn = (route, state) => {
-  const authService = inject(AuthenticationService); // Не забудьте правильно инициализировать ваш AuthService
+  const authService = inject(AuthenticationService);
   return authService.isTokenValid();
 };

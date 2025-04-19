@@ -21,14 +21,14 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping
-    public ResponseEntity<List<ReviewDto>> findAllReviews(){
-        return ResponseEntity.ok(reviewService.findAllReviews());
+    public ResponseEntity<ApiResponseDto<List<ReviewDto>>> findAllReviews(){
+        return ResponseEntity.ok(new ApiResponseDto<>("OK",reviewService.findAllReviews()));
     }
 
     @PostMapping
-    public ResponseEntity<ReviewDto> createReview(@RequestBody ReviewDto reviewDto){
+    public ResponseEntity<ApiResponseDto<ReviewDto>> createReview(@RequestBody ReviewDto reviewDto){
         ReviewDto result = reviewService.createReview(reviewDto);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(new ApiResponseDto<>("OK",result));
     }
 
     @GetMapping("/{id}")

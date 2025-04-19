@@ -170,7 +170,7 @@
               </div>
             </div>
           </div>
-          <a href="/reviews">
+          <a routerLink="/reviews">
             <h3 style="text-decoration: underline" class="text-center text-bisque">Все отзывы</h3>
           </a>
           <button class="carousel-control-prev" type="button" data-bs-target="#review-carousel" data-bs-slide="prev">
@@ -184,9 +184,10 @@
         </div>
       </section>
       <section id="contacts">
-        <div class="container text-white" style="margin-bottom: 80px!important;">
+        <div class="container text-white" style="margin-bottom: 6rem!important;">
           <h1 class="text-white">Контакты</h1>
           <div class="row">
+            <!-- Блок с контактной информацией -->
             <div class="col-md-4 contact-info bg-dark rounded p-4">
               <p><strong>Адрес:</strong><br>г. Самара, Московское шоссе, дом</p>
               <p><strong>График работы:</strong><br>Пн-Пт с 9:00 до 18:00<br>Суббота с 10:00 до 17:00<br>Воскресенье - выходной</p>
@@ -198,12 +199,18 @@
                 <a href="https://github.com/ValkovYuriy" class="me-2"><i class="fab fa-github" style="font-size: 30px; color: #c9f9ff"></i></a>
               </div>
             </div>
+
+            <!-- Блок с Яндекс-картой -->
+            <div class="col-md-8">
+              <app-yandex-map></app-yandex-map>
+            </div>
           </div>
         </div>
       </section>
     </main>
     <footer><app-footer></app-footer></footer>
   </div>
+
   </body>
 }
 @else if(!isMain()){

@@ -10,7 +10,7 @@ import {
   ValidationErrors, ValidatorFn,
   Validators
 } from "@angular/forms";
-import {NgClass, NgOptimizedImage} from '@angular/common';
+import {NgClass, NgIf, NgOptimizedImage} from '@angular/common';
 import {catchError, of} from 'rxjs';
 import {AuthenticationService} from '../../services/AuthenticationService/authentication.service';
 
@@ -40,9 +40,9 @@ export class RegisterComponent implements OnInit{
         Validators.required, Validators.minLength(4),Validators.maxLength(30)
       ]),
       confirmPassword: new FormControl('',[Validators.required,this.passwordMatchValidator()]),
-      phoneNumber: new FormControl('',[Validators.required, Validators.pattern(/^\+?[0-9]{10,15}$/)]),
-      firstName: new FormControl('',[Validators.required, Validators.minLength(2),Validators.maxLength(100)]),
-      lastName: new FormControl('',[Validators.required, Validators.minLength(2),Validators.maxLength(100)])
+      phoneNumber: new FormControl('',[Validators.pattern(/^\+?[0-9]{10,15}$/)]),
+      firstName: new FormControl('',[Validators.minLength(2),Validators.maxLength(100)]),
+      lastName: new FormControl('',[Validators.minLength(2),Validators.maxLength(100)])
     }
   );
 
@@ -90,4 +90,5 @@ export class RegisterComponent implements OnInit{
       });
     }
   }
+
 }

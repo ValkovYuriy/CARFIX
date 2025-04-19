@@ -17,27 +17,57 @@
                     <label class="form-label" for="email">Адрес электронной почты</label>
                     <span class="required">*</span>
                     <input [ngClass]="{ 'is-invalid': signUp.get('email')?.invalid && signUp.get('email')?.touched }" formControlName="email" type="email" id="email" name="username" class="form-control form-control-lg" placeholder="name@example.com" />
-                    <div class="invalid-feedback">
-                      Введите корректный email.
-                    </div>
+                    @if (signUp.get('email')?.errors?.['required']) {
+                      <div class="invalid-feedback">
+                        Адрес электронной почты обязателен для заполнения.
+                      </div>
+                    } @else if (signUp.get('email')?.errors?.['email']){
+                      <div class="invalid-feedback">
+                        Введите корректный адрес электронной почты
+                      </div>
+                    } @else if (signUp.get('email')?.errors?.['minlength']) {
+                      <div class="invalid-feedback">
+                        Адрес электронной почты должен содержать минимум 5 символов.
+                      </div>
+                    } @else if (signUp.get('email')?.errors?.['maxlength']) {
+                      <div class="invalid-feedback">
+                        Адрес электронной почты должен содержать не более 50 символов.
+                      </div>
+                    }
                   </div>
 
                   <div data-mdb-input-init class="form-outline mb-3">
                     <label class="form-label" for="password">Пароль</label>
                     <span class="required">*</span>
                     <input [ngClass]="{ 'is-invalid': signUp.get('password')?.invalid && signUp.get('password')?.touched }" formControlName="password" type="password" id="password" class="form-control form-control-lg"/>
-                    <div class="invalid-feedback">
-                      Пароль должен содержать минимум 4 символа.
-                    </div>
+                    @if (signUp.get('password')?.errors?.['required']) {
+                      <div class="invalid-feedback">
+                        Пароль обязателен для заполнения.
+                      </div>
+                    } @else if (signUp.get('password')?.errors?.['minlength']) {
+                      <div class="invalid-feedback">
+                        Пароль должен содержать минимум 4 символа.
+                      </div>
+                    } @else if (signUp.get('password')?.errors?.['maxlength']) {
+                      <div class="invalid-feedback">
+                        Пароль должен содержать не более 30 символов.
+                      </div>
+                    }
                   </div>
 
                   <div data-mdb-input-init class="form-outline mb-3">
                     <label class="form-label" for="confirmPassword">Повторите пароль</label>
                     <span class="required">*</span>
                     <input [ngClass]="{ 'is-invalid': (signUp.get('confirmPassword')?.invalid || signUp.hasError('mismatch')) && signUp.get('confirmPassword')?.touched }" formControlName="confirmPassword" type="password" id="confirmPassword" class="form-control form-control-lg"/>
-                    <div class="invalid-feedback">
-                      Пароли не совпадают.
-                    </div>
+                    @if (signUp.get('confirmPassword')?.errors?.['required']){
+                      <div class="invalid-feedback">
+                        Повторите пароль
+                      </div>
+                    } @else if (signUp.get('confirmPassword')?.errors?.['mismatch']){
+                      <div class="invalid-feedback">
+                        Пароли не совпадают.
+                      </div>
+                    }
                   </div>
 
                   <div data-mdb-input-init class="form-outline mb-4">
@@ -52,13 +82,25 @@
                     <input [ngClass]="{ 'is-invalid': signUp.get('firstName')?.invalid && signUp.get('firstName')?.touched }" formControlName="firstName" type="text" class="form-control">
                     <input [ngClass]="{ 'is-invalid': signUp.get('lastName')?.invalid && signUp.get('lastName')?.touched }" formControlName="lastName" type="text" class="form-control">
                     @if(signUp.get('firstName')?.invalid && signUp.get('firstName')?.touched){
-                      <div class="invalid-feedback">
-                        Введите корректное имя (минимум 2 символа).
-                      </div>
+                      @if (signUp.get('firstName')?.errors?.['minlength']){
+                        <div class="invalid-feedback">
+                          Введите корректное имя (минимум 2 символа).
+                        </div>
+                      } @else if (signUp.get('firstName')?.errors?.['maxlength']){
+                        <div class="invalid-feedback">
+                          Введите корректное имя (максимум 100 символов).
+                        </div>
+                      }
                     } @else if (signUp.get('lastName')?.invalid && signUp.get('lastName')?.touched){
-                      <div class="invalid-feedback">
-                        Введите корректную фамилию (минимум 2 символа).
-                      </div>
+                      @if (signUp.get('lastName')?.errors?.['minlength']){
+                        <div class="invalid-feedback">
+                          Введите корректную фамилию (минимум 2 символа).
+                        </div>
+                      } @else if (signUp.get('lastName')?.errors?.['maxlength']){
+                        <div class="invalid-feedback">
+                          Введите корректную фамилию (максимум 100 символов).
+                        </div>
+                      }
                     }
                   </div>
                   @if(errorMessage){
