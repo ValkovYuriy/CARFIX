@@ -86,7 +86,7 @@ export class RegisterComponent implements OnInit{
         })
       ).subscribe(response =>{
         localStorage.setItem("token",response.token);
-        this.router.navigate(['']);
+        this.router.navigate(['/']);
       });
     }
   }

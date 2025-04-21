@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {environment} from '../../environment';
 import {ApiResponse} from '../../model/ApiResponse';
 import {Mark} from '../../model/Mark';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

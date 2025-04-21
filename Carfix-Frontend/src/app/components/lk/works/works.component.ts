@@ -19,13 +19,41 @@ export class WorksComponent implements OnInit{
 
   bsModalRef: BsModalRef | undefined;
   works= signal<Work[]>([]);
+  // Настройки пагинации
+  rowsPerPage = 5; // Количество строк на странице
+  currentPage = signal(1); // Текущая страница (сигнал)
+
+  constructor(private workService: WorkService,private modalService: BsModalService) {
+  }
 
   ngOnInit() {
     this.loadWorks();
   }
 
-  constructor(private workService: WorkService,private modalService: BsModalService) {
+  getPaginatedData() {
+    const start = (this.currentPage() - 1) * this.rowsPerPage;
+    const end = this.currentPage() * this.rowsPerPage;
+    return this.works().slice(start, end);
   }
+
+
+  nextPage(): void {
+    if (this.currentPage() < Math.ceil(this.works().length / this.rowsPerPage)) {
+      this.currentPage.update(page => page + 1);
+    }
+  }
+
+  prevPage(): void {
+    if (this.currentPage() > 1) {
+      this.currentPage.update(page => page - 1);
+    }
+  }
+
+
+  getTotalPages(): number {
+    return Math.ceil(this.works().length / this.rowsPerPage);
+  }
+
 
   loadWorks(){
     this.workService.getWorks().pipe(
@@ -35,15 +63,23 @@ export class WorksComponent implements OnInit{
       })
     ).subscribe(
       response => {
-        this.works.set(response.data)
+        this.workService.works.set(response.data);
+        this.works = this.workService.works;
       }
     );
   }
 
-  showWorkDetails(work: Work){
+  showWorkDetails(work: Work | null, isEditMode: boolean = false){
     const initialState = {
-      work: work
-    }
+      work: work ?? {
+        id: null,
+        name: '',
+        description: '',
+        imageUrl: '',
+        workPrice: 0
+      },
+      isEditMode: isEditMode
+    };
     this.bsModalRef = this.modalService.show(WorkDetailsComponent,{initialState,class: 'modal-dialog-centered'} as any);
   }
 
@@ -55,6 +91,8 @@ export class WorksComponent implements OnInit{
       })
     ).subscribe(response =>{
       console.log('Услуга успешно удалена')
+      this.workService.deleteWorkInSignal(id);
     })
   }
+
 }

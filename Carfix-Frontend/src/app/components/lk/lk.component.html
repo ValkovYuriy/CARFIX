@@ -29,6 +29,9 @@
         <li>
           <a (click)="changeContent(1)"><span class="fa fa-wrench mr-3" style="font-size: 24px; cursor: pointer"></span>Управление услугами</a>
         </li>
+        <li>
+          <a (click)="changeContent(3)"><span class="fa-solid fa-list mr-3" style="font-size: 24px; cursor: pointer"></span>Управление заявками</a>
+        </li>
       } @else {
         <li>
           <a (click)="changeContent(2)"><span class="fa fa-user mr-3" style="font-size: 24px; cursor: pointer"></span>Редактировать
@@ -40,7 +43,7 @@
         </li>
       }
       <li>
-        <a routerLink="/login"><span class="fa-solid fa-right-from-bracket mr-3" style="font-size: 24px; cursor: pointer"></span>Выйти</a>
+        <a routerLink="/login" (click)="authService.logout()"><span class="fa-solid fa-right-from-bracket mr-3" style="font-size: 24px; cursor: pointer"></span>Выйти</a>
       </li>
     </ul>
   </nav>

@@ -1,8 +1,8 @@
 import {Injectable, Output} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {environment} from '../../environment';
 import {JwtHelperService} from '@auth0/angular-jwt';
 import {Router} from '@angular/router';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -70,6 +70,10 @@ export class AuthenticationService {
   logout(){
     this.httpClient.post(`${this.baseUrl}/logout`,null);
     localStorage.clear();
+  }
+
+  getCurrentUserId(){
+    return this.decodeToken().id;
   }
 
   private redirectToLogin(): void {

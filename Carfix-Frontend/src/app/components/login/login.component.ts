@@ -35,7 +35,6 @@ export class LoginComponent implements OnInit{
   );
 
   ngOnInit(): void {
-    //this.error = this.route.snapshot.queryParamMap.has('error');
     this.logout = this.route.snapshot.queryParamMap.has('logout');
   }
 
@@ -48,8 +47,8 @@ export class LoginComponent implements OnInit{
           return of(null);
         })
       ).subscribe(response =>{
-        localStorage.setItem("token",response.token);
-        this.router.navigate(['']);
+          localStorage.setItem("token", response.token);
+          this.router.navigate(['/']);
       });
     }
 

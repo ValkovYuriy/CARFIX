@@ -10,6 +10,7 @@ import yuriy.dev.carfixbackend.dto.UserDto;
 import yuriy.dev.carfixbackend.mapper.UserMapper;
 import yuriy.dev.carfixbackend.model.User;
 import yuriy.dev.carfixbackend.repository.UserRepository;
+import yuriy.dev.carfixbackend.token.JwtUtil;
 
 import java.util.UUID;
 
@@ -19,6 +20,7 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
 
     private final UserMapper userMapper;
 
@@ -33,21 +35,18 @@ public class UserService {
 
 
     @Transactional
-    public UserDto updateUser(UUID id, UserDto userDto) {
+    public String updateUser(UUID id, UserDto userDto) {
         User user = userRepository.findById(id).orElse(null);
         if(user != null){
-            user.setUsername(userDto.username());
-            user.setPassword(userDto.password());
-            user.setRole(userDto.role());
-            user.setFirstName(userDto.firstName());
-            user.setLastName(userDto.lastName());
-            user.setPhoneNumber(userDto.phoneNumber());
+            user.setUsername(userDto.username().isEmpty() ? user.getUsername() : userDto.username());
+            user.setFirstName(userDto.firstName().isEmpty() ? user.getFirstName() : userDto.firstName());
+            user.setLastName(userDto.lastName().isEmpty() ? user.getLastName() : userDto.lastName());
+            user.setPhoneNumber(userDto.phoneNumber().isEmpty() ? user.getPhoneNumber() : userDto.phoneNumber());
             User updatedUser = userRepository.save(user);
             log.info("Был обновлен пользователь с id {}", updatedUser.getId());
-            return userMapper.toDto(updatedUser);
+            return jwtUtil.generateToken(updatedUser);
         }
         return null;
-
     }
 
 

@@ -45,13 +45,4 @@ export class PersonalDataComponent implements OnInit{
     this.user.lastName = this.decodedToken.lastName;
   }
 
-  // formatPhoneNumber(phoneNumber: string): string {
-  //   // Удаляем префикс +7, если он есть
-  //   if (phoneNumber.startsWith('7')) {
-  //     phoneNumber = phoneNumber.substring(1);
-  //   }
-  //   // Преобразуем номер в формат (000) 000-00-00
-  //   const formattedNumber = `(${phoneNumber.substring(0, 3)}) ${phoneNumber.substring(3, 6)}-${phoneNumber.substring(6, 8)}-${phoneNumber.substring(8, 10)}`;
-  //   return formattedNumber;
-  // }
 }

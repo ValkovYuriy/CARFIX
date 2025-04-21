@@ -75,6 +75,7 @@ export class CarDataComponent implements OnInit{
     }
 
   getCarData(): Car {
+
     return <Car>this.car;
   }
 }

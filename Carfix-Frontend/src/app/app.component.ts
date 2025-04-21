@@ -31,7 +31,7 @@ export class AppComponent implements OnInit{
   constructor(private router: Router, private workService: WorkService, protected authService: AuthenticationService) {}
 
   isMain(){
-    return this.router.url === '/';
+    return this.router.url === '/home';
   }
 
   ngOnInit() {

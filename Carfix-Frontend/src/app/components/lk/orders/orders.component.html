@@ -1,6 +1,10 @@
 <div id="orders" >
   <div class="container mt-4">
-    <h2 class="mb-4">История обслуживания</h2>
+    @if(authService.isAdmin()){
+      <h2 class="mb-4">Заявки на обслуживание</h2>
+    } @else if (!authService.isAdmin()){
+      <h2 class="mb-4">История обслуживания</h2>
+    }
     <table class="table table-bordered">
       <thead class="thead-dark">
       <tr>
@@ -12,22 +16,33 @@
       </tr>
       </thead>
       <tbody id="customer-list">
-      @for(order of orders ; track order.id){
+      @for(order of orders() ; track order.id){
         <tr>
           <td>Модель: {{order.carDto.modelDto?.modelName}}
               Марка: {{order.carDto.modelDto?.mark?.markName}}
           </td>
-          <td >{{order.orderDate | date: 'dd/MM/yyyy hh:mm:ss'}}</td>
+          <td >{{order.orderDate | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
           <td >{{order.price}} ₽</td>
           <td >
             @switch (order.status){
+              @case ("ACCEPTED"){
+                <i class="fas fa-circle text-success"></i> Принят
+              }
               @case ("PENDING"){
                 <i class="fas fa-circle text-warning"></i> В обработке
               }
+              @case ("REJECTED"){
+                <i class="fas fa-circle text-danger"></i> Отклонен
+              }
+            }
+            @if (authService.isAdmin()){
+              <div class="d-flex">
+                <button class="btn btn-success btn-sm m-1" (click)="updateStatus(order,Status.ACCEPTED)">Принять</button>
+                <button class="btn btn-danger btn-sm m-1" (click)="updateStatus(order,Status.REJECTED)">Отклонить</button>
+              </div>
             }
           </td>
-
-          <td><button class="btn btn-info btn-sm" (click)="showOrderDetails(order)">Подробнее</button></td>
+          <td class="d-flex justify-content-center"><button class="btn btn-info btn-sm" (click)="showOrderDetails(order)">Подробнее</button></td>
         </tr>
       }
       </tbody>

@@ -19,7 +19,7 @@
   <div class="row w-100">
     <div data-mdb-input-init class="form-outline mb-3">
       <label for="car-brand">Марка автомобиля</label>
-      <select class="custom-select d-block w-100" id="car-brand" required="" [(ngModel)]="selectedBrand" (change)="onBrandChange(selectedBrand)">
+      <select class="custom-select d-block w-100" id="car-brand" required [(ngModel)]="selectedBrand" (change)="onBrandChange(selectedBrand)">
         <option value="">Выберите марку...</option>
         <option *ngFor="let mark of marks" [value]="mark.markName">{{ mark.markName }}</option>
       </select>
@@ -29,7 +29,7 @@
     </div>
     <div data-mdb-input-init class="form-outline mb-3">
       <label for="car-model">Модель автомобиля</label>
-      <select class="custom-select d-block w-100" id="car-model" [(ngModel)]="selectedModel" [disabled]="!selectedBrand" (change)="onModelChange(selectedModel)">
+      <select class="custom-select d-block w-100" id="car-model" required [(ngModel)]="selectedModel" [disabled]="!selectedBrand" (change)="onModelChange(selectedModel)">
         <option value="" disabled hidden>{{ selectedBrand ? 'Выберите модель...' : 'Сначала выберите марку' }}</option>
         <option *ngFor="let model of models" [value]="model.value">{{ model.label }}</option>
       </select>

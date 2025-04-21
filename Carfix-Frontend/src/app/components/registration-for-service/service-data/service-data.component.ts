@@ -1,21 +1,29 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import Choices from 'choices.js';
 import {Work} from '../../../model/Work';
 import {WorkService} from '../../../services/WorkService/work.service';
 import {catchError, of} from 'rxjs';
 import {ApiResponse} from '../../../model/ApiResponse';
 import {FormsModule} from '@angular/forms';
-
+import {NgIf, NgOptimizedImage} from '@angular/common';
+declare global {
+  interface Window {
+    webkitSpeechRecognition: any;
+    SpeechRecognition: any;
+  }
+}
 @Component({
   selector: 'app-service-data',
   standalone: true,
   imports: [
-    FormsModule
+    FormsModule,
+    NgIf,
+    NgOptimizedImage
   ],
   templateUrl: './service-data.component.html',
   styleUrl: './service-data.component.css'
 })
-export class ServiceDataComponent implements OnInit,OnDestroy {
+export class ServiceDataComponent implements OnInit {
 
   works: Work[] | null = null;
 
@@ -28,105 +36,71 @@ export class ServiceDataComponent implements OnInit,OnDestroy {
   };
   @ViewChild('descriptionInput') textarea!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('microIcon') microIcon!: ElementRef<HTMLElement>;
+  transcript = '';
+  isRecording = false;
   recognition: any;
-  isListening = false;
+  interimTranscript = '';
 
 
-  constructor(private workService: WorkService) {
-    this.initRecognition();
-  }
-
-  initRecognition() {
-    const SpeechRecognition = (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-      console.error('Браузер не поддерживает Web Speech API');
-      return;
-    }
-
+  constructor(private workService: WorkService,private cdr: ChangeDetectorRef) {
+    const SpeechRecognition = window['SpeechRecognition'] || window['webkitSpeechRecognition'];
     this.recognition = new SpeechRecognition();
-    this.recognition.continuous = true;
-    this.recognition.interimResults = true;
     this.recognition.lang = 'ru-RU';
-
-    this.recognition.onstart = () => {
-      console.log('Распознавание начато');
-      this.isListening = true;
-    };
+    this.recognition.interimResults = true;
+    this.recognition.continuous = true;
 
     this.recognition.onresult = (event: any) => {
       let interim = '';
-      let final = '';
-
-      for (let i = 0; i < event.results.length; i++) {
-        // Добавляем проверку на существование результата
-        if (!event?.results[i] || !event?.results[i][0]) {
-          continue;
-        }
-
+      for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event?.results[i][0].transcript;
+        console.log(transcript);
         if (event?.results[i].isFinal) {
-          final += transcript + ' '; // Добавляем пробел между фразами
+          this.transcript += transcript + ' ';
         } else {
           interim += transcript;
         }
       }
-
-      // Обновляем текст, отдавая приоритет финальным результатам
-      this.serviceData.description = final.trim() || interim;
+      this.interimTranscript = interim;
+      this.cdr.detectChanges(); // Принудительное обновление интерфейса
     };
+
     this.recognition.onerror = (event: any) => {
       console.error('Ошибка распознавания:', event.error);
-      this.isListening = false;
+      this.stopRecording();
     };
-
-    this.recognition.onend = () => {
-      console.log('Распознавание завершено');
-      this.isListening = false;
-    };
-
   }
 
-
-
-  toggleVoiceRecognition() {
-    if (this.isListening) {
-      this.stopRecognition();
-    } else {
-      this.startRecognition();
-    }
-  }
-
-  startRecognition() {
-    if (!this.recognition) {
-      this.initRecognition();
-    }
-
-    try {
-      this.recognition.start();
-      console.log('Попытка запуска распознавания');
-    } catch (e) {
-      console.error('Ошибка при запуске:', e);
-      // Попробуем снова через небольшой интервал
-      setTimeout(() => this.recognition.start(), 100);
-    }
-  }
-
-  stopRecognition() {
-    if (this.recognition) {
-      this.recognition.stop();
-    }
-    this.isListening = false;
-  }
-
-  ngOnDestroy() {
-    this.stopRecognition();
-  }
 
 
   ngOnInit() {
     this.initializeChoices();
+  }
+
+  toggleRecording() {
+    this.isRecording = !this.isRecording;
+    if (this.isRecording) {
+      this.startRecording();
+    } else {
+      this.stopRecording();
+    }
+  }
+
+  startRecording() {
+    this.recognition.start();
+  }
+
+  stopRecording() {
+    this.recognition.stop();
+    this.isRecording = false;
+  }
+
+  clearText() {
+    this.transcript = '';
+    this.interimTranscript = '';
+  }
+
+  get combinedText(): string {
+    return this.transcript + this.interimTranscript;
   }
 
   initializeChoices(): void {
@@ -170,12 +144,12 @@ export class ServiceDataComponent implements OnInit,OnDestroy {
 
   getServiceData() {
     this.serviceData.works = this.getSelectedWorks();
+    this.serviceData.description = this.textarea.nativeElement.value;
     return this.serviceData;
   }
 
   getSelectedWorks(): Work[] {
     return this.works ? this.works.filter(work => this.selectedWorks.includes(work.name)) : [];
   }
-
 
 }

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import yuriy.dev.carfixbackend.dto.OrderDto;
+import yuriy.dev.carfixbackend.dto.enums.Status;
 import yuriy.dev.carfixbackend.mapper.CarMapper;
 import yuriy.dev.carfixbackend.mapper.OrderMapper;
 import yuriy.dev.carfixbackend.model.Car;
@@ -37,7 +38,7 @@ public class OrderService {
                 .findAll()
                 .stream()
                 .filter(order -> order.getUser().getId().equals(userId))
-                .toList();;
+                .toList();
         return getOrderDtos(works, orders);
     }
 
@@ -78,6 +79,16 @@ public class OrderService {
             updatedOrder = orderRepository.save(order);
         }
         return orderMapper.toDto(updatedOrder);
+    }
+
+    public OrderDto updateOrderStatus(UUID id, Status status) {
+        Order order = orderRepository.findById(id).orElse(null);
+        if (order != null) {
+            order.setStatus(status);
+            Order updatedOrder = orderRepository.save(order);
+            return orderMapper.toDto(updatedOrder);
+        }
+        return null;
     }
 
     public void deleteOrder(UUID id) {

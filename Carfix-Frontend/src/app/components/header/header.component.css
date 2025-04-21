@@ -64,12 +64,16 @@ input[type=submit] {
   margin-top: 10px!important;
 }
 ::ng-deep .mat-mdc-autocomplete-panel {
-  margin-top: 10px;
+  margin-top: 20px;
 }
 .custom-option{
   --bs-bg-opacity:1;
   background-color:rgba(var(--bs-dark-rgb),var(--bs-bg-opacity))!important;
   color: bisque;
+}
+
+.custom-option:hover{
+  background-color: #19354a !important;
 }
 
 .nav-link {

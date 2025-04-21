@@ -3,71 +3,78 @@
     <div class="card-header">
       <h2 class="mb-4">Личные данные</h2>
     </div>
-    <div class="card-body bg-body-tertiary pb-0">
-      <form data-wizard-form="2">
-        <div class="form-group">
-          <label for="email">Адрес электронной почты</label>
-          <div class="input-container">
-            <span class="input-group-text" id="basic-addon1">&#64;</span>
-            <input type="email" id="email" name="username"
-                   class="form-control" placeholder="name@example.com" required minlength="5"
-                   maxlength="50"/>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="phone-number">Номер телефона</label>
-          <input id="phone-number" type="text" name="phoneNumber"
-                 class="form-control"/>
-        </div>
-        <div class="form-group">
-          <div class="input-group">
-            <span class="input-group-text">Имя и Фамилия</span>
-            <input id="first-name" class="form-control" type="text" aria-label="Имя"/>
-            <input id="last-name" class="form-control" type="text" aria-label="Фамилия"/>
-          </div>
-        </div>
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                data-bs-target="#exampleModal">
-          Сохранить
-        </button>
+    <div class="col-md-6 col-lg-7 d-flex align-items-center w-100">
+      <div class="card-body p-4 p-lg-5 text-black">
 
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <!--                                    <div class="modal-header">-->
-              <!--                                        <h5 class="modal-title" id="exampleModalLabel">Изменение пароля</h5>-->
-              <!--                                        <button type="button" class="btn-close" data-bs-dismiss="modal"-->
-              <!--                                                aria-label="Close"></button>-->
-              <!--                                    </div>-->
-              <div class="modal-body" id="modal-check">
-                <div class="form-group">
-                  <label for="password">Подтвердите пароль</label>
-                  <div class="input-container">
-                    <input type="password" id="password" name="password"
-                           class="form-control" required minlength="4" maxlength="12"/>
-                  </div>
-                </div>
-                <!--                                        <div class="form-group">-->
-                <!--                                            <label for="confirmPassword">Введите новый пароль</label>-->
-                <!--                                            <div class="input-container">-->
-                <!--                                                <input type="password" id="confirmPassword" name="confirmPassword"-->
-                <!--                                                       class="form-control" required/>-->
-                <!--                                            </div>-->
-                <!--                                        </div>-->
+        <form [formGroup]="editProfile" (submit)="updateProfile()" >
+
+          <div data-mdb-input-init class="form-outline mb-3">
+            <label class="form-label" for="email">Адрес электронной почты</label>
+            <input [ngClass]="{ 'is-invalid': editProfile.get('email')?.invalid && editProfile.get('email')?.touched }" formControlName="email" type="email" id="email" name="username" class="form-control form-control-lg" placeholder="name@example.com" />
+            @if (editProfile.get('email')?.errors?.['required']) {
+              <div class="invalid-feedback">
+                Адрес электронной почты обязателен для заполнения.
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                  Закрыть
-                </button>
-                <button type="button" class="btn btn-primary">Сохранить</button>
+            } @else if (editProfile.get('email')?.errors?.['email']){
+              <div class="invalid-feedback">
+                Введите корректный адрес электронной почты
               </div>
+            } @else if (editProfile.get('email')?.errors?.['minlength']) {
+              <div class="invalid-feedback">
+                Адрес электронной почты должен содержать минимум 5 символов.
+              </div>
+            } @else if (editProfile.get('email')?.errors?.['maxlength']) {
+              <div class="invalid-feedback">
+                Адрес электронной почты должен содержать не более 50 символов.
+              </div>
+            }
+          </div>
+
+          <div data-mdb-input-init class="form-outline mb-4">
+            <label class="form-label" for="phone-number">Номер телефона</label>
+            <input [ngClass]="{ 'is-invalid': editProfile.get('phoneNumber')?.invalid && editProfile.get('phoneNumber')?.touched }" formControlName="phoneNumber" id="phone-number" mask="(000) 000-00-00" prefix="+7" [showMaskTyped]="true" type="text" name="phoneNumber" class="form-control form-control-lg"/>
+            <div class="invalid-feedback">
+              Введите корректный номер телефона (например, +79991234567).
             </div>
           </div>
-        </div>
-      </form>
+          <div class="input-group mb-3">
+            <span class="input-group-text">Имя и Фамилия</span>
+            <input [ngClass]="{ 'is-invalid': editProfile.get('firstName')?.invalid && editProfile.get('firstName')?.touched }" formControlName="firstName" type="text" class="form-control">
+            <input [ngClass]="{ 'is-invalid': editProfile.get('lastName')?.invalid && editProfile.get('lastName')?.touched }" formControlName="lastName" type="text" class="form-control">
+            @if(editProfile.get('firstName')?.invalid && editProfile.get('firstName')?.touched){
+              @if (editProfile.get('firstName')?.errors?.['minlength']){
+                <div class="invalid-feedback">
+                  Введите корректное имя (минимум 2 символа).
+                </div>
+              } @else if (editProfile.get('firstName')?.errors?.['maxlength']){
+                <div class="invalid-feedback">
+                  Введите корректное имя (максимум 100 символов).
+                </div>
+              }
+            } @else if (editProfile.get('lastName')?.invalid && editProfile.get('lastName')?.touched){
+              @if (editProfile.get('lastName')?.errors?.['minlength']){
+                <div class="invalid-feedback">
+                  Введите корректную фамилию (минимум 2 символа).
+                </div>
+              } @else if (editProfile.get('lastName')?.errors?.['maxlength']){
+                <div class="invalid-feedback">
+                  Введите корректную фамилию (максимум 100 символов).
+                </div>
+              }
+            }
+          </div>
+          @if(errorMessage){
+            <div class="alert alert-danger mt-3">
+              {{errorMessage}}
+            </div>
+          }
+          <div class="pt-1 mb-4">
+            <button data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg btn-block w-100" type="submit">Сохранить</button>
+          </div>
+
+        </form>
+
+      </div>
     </div>
   </div>
 </div>

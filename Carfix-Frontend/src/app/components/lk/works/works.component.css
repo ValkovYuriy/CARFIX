@@ -35,3 +35,31 @@
 .action-icon:last-child {
   margin-right: 0;
 }
+
+.action-plus{
+  color: #53ac53;
+}
+.action-edit{
+  color: #5f68e3;
+}
+.action-delete{
+  color: #e31025;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.plus-btn {
+  background-color: #f4f4f4;
+  color: #333;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.plus-btn:hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+}

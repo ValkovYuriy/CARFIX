@@ -8,6 +8,7 @@ import {catchError, of} from 'rxjs';
 import {DatePipe, NgClass} from '@angular/common';
 import {BarRating, BarRatingEffect} from 'ngx-bar-rating';
 import {FormsModule} from '@angular/forms';
+import {RouterLink} from '@angular/router';
 
 
 @Component({
@@ -18,7 +19,8 @@ import {FormsModule} from '@angular/forms';
     NgClass,
     BarRating,
     BarRatingEffect,
-    FormsModule
+    FormsModule,
+    RouterLink
   ],
   templateUrl: './reviews.component.html',
   styleUrl: './reviews.component.css'
@@ -29,8 +31,11 @@ export class ReviewsComponent implements OnInit{
   @ViewChild('counter') counter!: ElementRef<HTMLElement>;
   @ViewChild('reviewArea') reviewArea!: ElementRef<HTMLTextAreaElement>;
   reviews = signal<Review[]>([]);
+  selectedRating = signal<string>('all');
+  selectedSort = signal<string>('newest');
+  filteredReviews = signal<Review[]>([]);
   rating: number = -1;
-  review: Review  = {id: null, reviewContent: '', rating: 0, reviewDate: new Date(), userDto: null };
+  review: Review  = {id: null, reviewContent: '', rating: -1, reviewDate: new Date(), userDto: null };
 
 
   constructor(protected authService: AuthenticationService, private reviewService: ReviewService) {
@@ -44,7 +49,30 @@ export class ReviewsComponent implements OnInit{
       })
     ).subscribe(response => {
       this.reviews.set(response.data);
+      this.applyFilters();
     })
+  }
+
+
+
+  applyFilters(): void {
+    let filtered = this.reviews();
+
+    // Фильтрация по рейтингу
+    if (this.selectedRating() !== 'all') {
+      const rating = parseInt(this.selectedRating(), 10);
+      filtered = filtered.filter(review => review.rating === rating);
+    }
+
+    // Сортировка по дате
+    if (this.selectedSort() === 'newest') {
+      filtered = filtered.sort((a, b) => new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime());
+    } else if (this.selectedSort() === 'oldest') {
+      filtered = filtered.sort((a, b) => new Date(a.reviewDate).getTime() - new Date(b.reviewDate).getTime());
+    }
+
+    // Обновляем сигнал с отфильтрованными и отсортированными отзывами
+    this.filteredReviews.set(filtered);
   }
 
   updateCounter(){
@@ -77,16 +105,21 @@ export class ReviewsComponent implements OnInit{
   }
 
   postReview(){
-    this.review!.rating = this.rating;
-    this.reviewService.createReview(this.review!).pipe(
-      catchError(err => {
-        console.error('Ошибка при создании отзыва',err);
-        return of(null);
-      })
-    ).subscribe(response => {
-      console.log('Успешное сохранение отзыва');
-      this.reviews.update(reviews => [...reviews, response.data]);
-    });
+    if(this.rating != -1 && this.review.reviewContent != ''){
+      this.review!.rating = this.rating;
+      this.reviewService.createReview(this.review!).pipe(
+        catchError(err => {
+          console.error('Ошибка при создании отзыва',err);
+          return of(null);
+        })
+      ).subscribe(response => {
+        console.log('Успешное сохранение отзыва');
+        this.reviews.update(reviews => [...reviews, response.data]);
+      });
+    }
+    else{
+      alert('Заполните отзыв');
+    }
   }
 
 

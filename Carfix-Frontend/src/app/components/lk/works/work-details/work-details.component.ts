@@ -18,6 +18,7 @@ export class WorkDetailsComponent implements OnInit{
 
   @Input() work: Work | undefined;
 
+  isEditMode: boolean = false;
   editWork: FormGroup = new FormGroup({
     name: new FormControl(),
     description: new FormControl(),
@@ -37,17 +38,42 @@ export class WorkDetailsComponent implements OnInit{
         imageUrl: this.work?.imageUrl
       },
     );
+    this.isEditMode = !!this.work?.id;
   }
 
   saveEditedWork(id: string) {
+    if (this.isEditMode){
       this.workService.updateWork(id,this.editWork.value).pipe(
         catchError(err => {
           console.error('Произошла ошибка при обновлении услуги',err);
+          alert('Произошла ошибка при обновлении услуги')
           return of(null);
         })
       ).subscribe(response =>{
         this.bsModalRef.hide();
+        this.work!.name = this.editWork.get('name')?.value;
+        this.work!.description = this.editWork.get('description')?.value;
+        this.work!.workPrice = this.editWork.get('workPrice')?.value;
+        this.work!.imageUrl = this.editWork.get('imageUrl')?.value;
+        this.workService.updateWorkInSignal(this.work!);
       })
+    }else{
+      this.workService.createWork(this.editWork.value).pipe(
+        catchError(err => {
+          console.error('Произошла ошибка при добавлении услуги',err);
+          alert('Произошла ошибка при добавлении услуги');
+          return of(null);
+        })
+      ).subscribe(response =>{
+        this.bsModalRef.hide();
+        this.work!.name = this.editWork.get('name')?.value;
+        this.work!.description = this.editWork.get('description')?.value;
+        this.work!.workPrice = this.editWork.get('workPrice')?.value;
+        this.work!.imageUrl = this.editWork.get('imageUrl')?.value;
+        this.workService.addWorkToSignal(this.work!);
+      })
+    }
+
   }
 
 

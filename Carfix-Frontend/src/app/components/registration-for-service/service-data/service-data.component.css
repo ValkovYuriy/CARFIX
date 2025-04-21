@@ -19,3 +19,8 @@
   color: var(--text-color);
 }
 
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+

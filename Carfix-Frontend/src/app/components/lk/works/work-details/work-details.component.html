@@ -1,8 +1,9 @@
 <div class="modal-header">
-  <h5 class="modal-title" id="editServiceModalLabel">Редактирование услуги</h5>
-<!--  <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--    <span aria-hidden="true">&times;</span>-->
-<!--  </button>-->
+  @if (isEditMode){
+    <h5 class="modal-title" id="editServiceModalLabel">Редактирование услуги</h5>
+  } @else if (!isEditMode){
+    <h5 class="modal-title" id="addServiceModalLabel">Добавление услуги</h5>
+  }
 </div>
 @if(work){
   <div class="modal-body">
@@ -17,7 +18,7 @@
       </div>
       <div class="form-group">
         <label for="servicePrice">Цена</label>
-        <input type="number" class="form-control" id="servicePrice" formControlName="workPrice" step="1" required>
+        <input type="number" class="form-control" id="servicePrice" formControlName="workPrice" step="1" min="0" required>
       </div>
       <div class="form-group">
         <label for="serviceImageUrl">URL Адрес картинки</label>

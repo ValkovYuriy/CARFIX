@@ -1,11 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, signal} from '@angular/core';
 import {OrderService} from '../../../services/OrderService/order.service';
 import {Order} from '../../../model/Order';
 import {AuthenticationService} from '../../../services/AuthenticationService/authentication.service';
 import {catchError, of} from 'rxjs';
 import {DatePipe} from '@angular/common';
-import {BsModalService,BsModalRef} from 'ngx-bootstrap/modal';
+import {BsModalRef, BsModalService} from 'ngx-bootstrap/modal';
 import {OrderDetailsComponent} from './order-details/order-details.component';
+import {Status} from '../../../model/Status';
 
 @Component({
   selector: 'app-orders',
@@ -18,11 +19,11 @@ import {OrderDetailsComponent} from './order-details/order-details.component';
 })
 export class OrdersComponent implements OnInit{
 
-  orders: Order[] = [];
+  orders = signal<Order[]>([]);
   decodedToken: any = null;
   bsModalRef: BsModalRef | undefined;
 
-  constructor(private orderService: OrderService, private authService: AuthenticationService, private modalService: BsModalService) {
+  constructor(private orderService: OrderService, protected authService: AuthenticationService, private modalService: BsModalService) {
 
   }
 
@@ -33,13 +34,13 @@ export class OrdersComponent implements OnInit{
   }
 
   getAllOrders(){
-    this.orderService.findAllOrders(this.decodedToken.id).pipe(
+    this.orderService.findAllOrders(this.authService.isAdmin() ? null : this.decodedToken.id).pipe(
       catchError(err => {
         console.error("Ошибка при загрузке заказов",err);
         return of([]);
       })
     ).subscribe(response => {
-      this.orders = response.data;
+      this.orders.set(response.data);
     })
   }
 
@@ -50,4 +51,20 @@ export class OrdersComponent implements OnInit{
     this.bsModalRef = this.modalService.show(OrderDetailsComponent,{initialState,class: 'modal-dialog-centered'} as any);
 
   }
+
+  updateStatus(order: Order,status: Status) {
+    this.orderService.updateOrderStatus(order.id!,status).pipe(
+      catchError(err => {
+        console.error('Произошла ошибка при обновлении статуса заявки',err);
+        alert('Произошла ошибка при обновлении статуса заявки');
+        return of(null);
+      })
+    ).subscribe(response => {
+      console.log('Статус заявки изменен',response.data);
+      this.orders.update((currentOrders) => currentOrders.map((order) =>
+        (order.id === response.data.id ? response.data : order)))
+    })
+  }
+
+  protected readonly Status = Status;
 }

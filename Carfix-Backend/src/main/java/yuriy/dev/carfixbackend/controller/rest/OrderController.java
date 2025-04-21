@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import yuriy.dev.carfixbackend.dto.OrderDto;
+import yuriy.dev.carfixbackend.dto.enums.Status;
 import yuriy.dev.carfixbackend.dto.response.ApiResponseDto;
 import yuriy.dev.carfixbackend.service.OrderService;
 
@@ -35,6 +36,12 @@ public class OrderController {
     public ResponseEntity<ApiResponseDto<OrderDto>> addOrder(@RequestBody OrderDto dto){
         OrderDto addedDto = orderService.addOrder(dto);
         return ResponseEntity.ok(new ApiResponseDto<>("OK",addedDto));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponseDto<OrderDto>> updateOrderStatus(@PathVariable UUID id, @RequestBody Status status){
+        OrderDto updatedDto = orderService.updateOrderStatus(id, status);
+        return ResponseEntity.ok(new ApiResponseDto<>("OK",updatedDto));
     }
     
     @PutMapping("/{id}")

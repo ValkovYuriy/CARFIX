@@ -7,8 +7,11 @@ import {
   RegistrationForServiceComponent
 } from './components/registration-for-service/registration-for-service.component';
 import {ReviewsComponent} from './components/reviews/reviews.component';
+import {AppComponent} from './app.component';
 
 export const routes: Routes = [
+  { path: '', redirectTo: '/home', pathMatch: 'full'},
+  { path: 'home', component: AppComponent},
   { path: 'login', component: LoginComponent},
   { path: 'register', component: RegisterComponent},
   { path: 'reviews', component: ReviewsComponent},

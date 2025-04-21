@@ -5,7 +5,8 @@
     <!-- Фильтры -->
     <div class="row mb-4 justify-content-center">
       <div class="col-md-4 mb-4">
-        <select class="form-select" id="ratingFilter">
+        <select class="form-select" id="ratingFilter" [(ngModel)]="selectedRating"
+                (change)="applyFilters()">
           <option selected value="all">Сортировать по рейтингу</option>
           <option value="5">5 звезд</option>
           <option value="4">4 звезды</option>
@@ -15,18 +16,22 @@
         </select>
       </div>
       <div class="col-md-4">
-        <select class="form-select" id="dateFilter">
+        <select class="form-select" id="dateFilter" [(ngModel)]="selectedSort"
+                (change)="applyFilters()">
           <option value="newest">Сначала новые</option>
           <option value="oldest">Сначала старые</option>
         </select>
       </div>
+      <div class="col-md-2">
+        <button routerLink="/" class="btn btn-primary" >На главную</button>
+      </div>
       <div class="row" id="reviewsContainer">
-        @for (review of reviews(); track review.id){
+        @for (review of filteredReviews(); track review.id){
           <div class="card mb-3" [ngClass]="getRatingClass(review.rating)">
             <div class="card-body">
               <div class="d-flex ">
                 <h5 class="card-title">{{ review.userDto!.firstName }} {{ review.userDto!.lastName }} </h5>
-                <h6 style="margin-left: auto"> {{ review.rating }} ★</h6>
+                <h6 style="margin-left: auto; color: black"> {{ review.rating }} ⭐</h6>
               </div>
               <p class="card-text" >{{ review.reviewContent}}</p>
               <div class="d-flex justify-content-between align-items-center">

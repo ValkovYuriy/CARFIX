@@ -436,6 +436,28 @@ app-header{
 .table-responsive > .table-bordered {
   border: 0; }
 
+/* Анимация при наведении */
+.custom-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.custom-btn:hover::after {
+  opacity: 1;
+}
+
+/* Эффект пульсации при клике */
+.custom-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 
 
 

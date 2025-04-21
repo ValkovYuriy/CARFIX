@@ -3,23 +3,23 @@
   <div class="form-outline mb-3">
     <label for="firstName" class="form-label">Имя</label>
     <input id="firstName" type="text" name="firstName"
-           class="form-control form-control-lg" [(ngModel)]="user.firstName">
+           class="form-control form-control-lg" [(ngModel)]="user.firstName" required>
   </div>
   <div data-mdb-input-init class="form-outline mb-3">
     <label for="lastName" class="form-label">Фамилия</label>
     <input id="lastName" class="form-control form-control-lg" type="text" aria-label="Фамилия"
-            [(ngModel)]="user.lastName"/>
+            [(ngModel)]="user.lastName" required/>
   </div>
   <div data-mdb-input-init class="form-outline mb-3">
     <label for="phone-number" class="form-label">Номер телефона</label>
     <input id="phone-number" mask="(000) 000-00-00" prefix="+7"
            [showMaskTyped]="true" type="text" name="phoneNumber" class="form-control form-control-lg"
-           [(ngModel)]="user.phoneNumber" >
+           [(ngModel)]="user.phoneNumber" required>
   </div>
   <div data-mdb-input-init class="form-outline mb-3">
     <label class="form-label" for="email">Адрес электронной почты</label>
     <input type="email" id="email" name="username" class="form-control form-control-lg"
-           placeholder="name@example.com" [(ngModel)]="user.username"/>
+           placeholder="name@example.com" [(ngModel)]="user.username" required/>
     <div class="invalid-feedback">
       Введите корректный email.
     </div>

@@ -38,7 +38,13 @@ public class WorkService {
 
     public WorkDto createWork(WorkDto workDto){
         Work work = workMapper.toWork(workDto);
-        return workMapper.toDto(workRepository.save(work));
+        workRepository.save(work);
+        workPriceRepository.save(WorkPrice.builder()
+                .price(workDto.workPrice())
+                .date(LocalDateTime.now())
+                .work(work)
+                .build());
+        return workMapper.toDto(work);
     }
     public WorkDto updateWork(UUID id,WorkDto workDto) {
         Work work = workRepository.findByIdWithLatestPrice(id).orElse(null);

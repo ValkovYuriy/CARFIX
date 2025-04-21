@@ -1,13 +1,22 @@
-<div id="serv" style="font-size: 18px">
+<div id="serv" style="font-size: 18px;">
   <h4>Введите данные для записи на обслуживание</h4>
   <div class="mb-3">
-    <label for="description" class="form-label">Опишите проблему:</label>
-    <i #microIcon
-      id="micro-icon"
-      class="fa fa-microphone micro m-lg-1"
-      (click)="toggleVoiceRecognition()"
-      [class.micro-listening]="isListening">
-    </i> Голосовой ввод
+    <div class="buttons" >
+      <label for="description" class="form-label">Опишите проблему:</label>
+        <div class="icon">
+          <img ngSrc="/assets/images/bars.svg" alt="Recording" *ngIf="isRecording" height="40" width="35"/>
+        </div>
+        <i #microIcon
+          id="micro-icon"
+          class="fa fa-microphone micro m-lg-1"
+          (click)="toggleRecording()"
+          [class.micro-listening]="isRecording"><span>{{ isRecording ? '   Остановить' : '   Голосовой ввод' }}</span>
+        </i>
+      <button class="btn btn-dark btn-sm mb-2" (click)="clearText()">
+        <span>Очистить</span>
+      </button>
+    </div>
+
     <div class="input-group">
     <textarea #descriptionInput
       id="description"
@@ -15,7 +24,7 @@
       rows="4"
       cols="50"
       class="form-control"
-      [(ngModel)]="serviceData.description">
+      [value]="combinedText">
     </textarea>
     </div>
   </div>
