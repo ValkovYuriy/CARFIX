@@ -48,16 +48,16 @@
           <h2 class="pb-2 border-bottom text-bisque" style="margin-top: 50px">Наши услуги</h2>
 
           <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5" id="services-container">
-            @for (service of services(); track service.id) {
-              <div class="col" id="${service.id}">
-                <div (click)="showServiceDetails(service)"
+            @for (work of this.workService.works(); track work.id) {
+              <div class="col" >
+                <div (click)="showServiceDetails(work)"
                      class="card card-hover card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
-                     [style.background-image]="'url(' + service.imageUrl + ')'" style="background-size: cover">
+                     [style.background-image]="'url(' + work.imageUrl + ')'" style="background-size: cover">
                   <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                    <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold" style="color: bisque">{{ service.name }}</h3>
+                    <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold" style="color: bisque">{{ work.name }}</h3>
                     <ul class="d-flex list-unstyled mt-auto">
                       <li class="d-flex align-items-left me-3">
-                        <h3 style="color: bisque">Стоимость: От {{ service.workPrice }} руб.</h3>
+                        <h3 style="color: bisque">Стоимость: От {{ work.workPrice }} руб.</h3>
                       </li>
                     </ul>
                   </div>
@@ -163,13 +163,6 @@
                 </div>
               </div>
             </div>
-<!--            <div class="carousel-item">-->
-<!--              <img src="assets/images/reviews-background.png" class="d-block w-100" alt="...">-->
-<!--              <div class="carousel-caption d-none d-md-block">-->
-<!--                <h5>Third slide label</h5>-->
-<!--                <p>Some representative placeholder content for the third slide.</p>-->
-<!--              </div>-->
-<!--            </div>-->
           </div>
           <a routerLink="/reviews">
             <h3 style="text-decoration: underline" class="text-center text-bisque">Все отзывы</h3>
@@ -189,7 +182,7 @@
           <h2 class="pb-2 border-bottom text-bisque">Топ самых популярных услуг за год</h2>
         </div>
         <div class="row row-cols-1 row-cols-lg-5 align-items-stretch g-4" id="popular-works-container">
-          @for (work of popularWorks(); track work.name) {
+          @for (work of this.workService.popularWorks(); track work.name) {
             <div class="col" id="${work.id}">
               <div class="card card-hover popular-card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
                    [style.background-image]="'url(' + work.imageUrl + ')'" style="background-size: cover;" >

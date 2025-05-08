@@ -47,7 +47,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/auth/*").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/actuator/**","/api/works","/api/works/*").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/actuator/**","/api/works","/api/works/*","/api/reviews").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/orders").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.POST, "/api/orders").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.POST,"/api/works", "/api/work-prices","/api/marks","/api/models").hasRole("ADMIN")

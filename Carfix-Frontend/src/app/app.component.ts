@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, inject, Input, OnInit, signal} from '@angular/core';
+import {AfterViewInit, Component, effect, inject, Input, OnInit, signal} from '@angular/core';
 import {NavigationEnd, Router, RouterLink, RouterOutlet} from '@angular/router';
 import {HeaderComponent} from './components/header/header.component';
 import {FooterComponent} from './components/footer/footer.component';
@@ -24,51 +24,25 @@ import {PopularWork} from './model/PopularWork';
 })
 export class AppComponent implements OnInit{
   title = 'CARFIX';
-  services= signal<Work[]>([]);
-  popularWorks = signal<PopularWork[]>([]);
   searchData: string[] = [];
   token : any = null;
-  decodedToken : {firstName: string, lastName: string} = {firstName: '', lastName: ''};
-
-  constructor(private router: Router, private workService: WorkService, protected authService: AuthenticationService) {}
+  constructor(private router: Router, protected workService: WorkService, protected authService: AuthenticationService) {}
 
   isMain(){
     return this.router.url === '/home';
   }
 
   ngOnInit() {
-    this.loadServices();
+    this.loadWorks();
     this.loadPopularWorks();
   }
 
-  loadServices(){
-    this.workService.getWorks().pipe(
-      catchError(err => {
-        console.error("Ошибка при загрузке услуг",err);
-        return of({ message: 'Ошибка', data: [] } as ApiResponse<Work[]>);
-      })
-    ).subscribe(
-      response => {
-        this.services.set(response.data)
-        this.services().forEach(work =>{
-          this.searchData.push(work.name);
-        })
-        this.workService.setSearchData(this.searchData)
-      }
-    );
+  loadWorks(){
+    this.workService.getWorks();
   }
 
   loadPopularWorks(){
-    this.workService.getPopularWorks().pipe(
-      catchError(err => {
-        console.error("Ошибка при загрузке услуг",err);
-        return of({ message: 'Ошибка', data: [] } as ApiResponse<any>);
-      })
-    ).subscribe(
-      response => {
-        this.popularWorks.set(response.data)
-      }
-    );
+    this.workService.getPopularWorks();
   }
 
   showServiceDetails(service: Work){

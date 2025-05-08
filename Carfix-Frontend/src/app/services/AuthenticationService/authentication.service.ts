@@ -36,7 +36,7 @@ export class AuthenticationService {
   }
 
   isLoggedIn(): boolean {
-    return this.getAuthToken() != null;
+    return this.getAuthToken() !== null && this.isTokenValid();
   }
 
   decodeToken() {
@@ -53,7 +53,7 @@ export class AuthenticationService {
   }
 
   isTokenValid() {
-    const token = this.token;
+    const token = this.getAuthToken();
     if (!token) {
       return false;
     }
@@ -69,7 +69,7 @@ export class AuthenticationService {
 
   logout(){
     this.httpClient.post(`${this.baseUrl}/logout`,null);
-    localStorage.clear();
+    localStorage.removeItem('token');
   }
 
   getCurrentUserId(){

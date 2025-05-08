@@ -1,11 +1,8 @@
 import {Component, OnInit, signal} from '@angular/core';
 import {Work} from '../../../model/Work';
 import {catchError, of} from 'rxjs';
-import {ApiResponse} from '../../../model/ApiResponse';
 import {WorkService} from '../../../services/WorkService/work.service';
-import {DatePipe} from '@angular/common';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap/modal';
-import {OrderDetailsComponent} from '../orders/order-details/order-details.component';
 import {WorkDetailsComponent} from './work-details/work-details.component';
 
 @Component({
@@ -18,12 +15,10 @@ import {WorkDetailsComponent} from './work-details/work-details.component';
 export class WorksComponent implements OnInit{
 
   bsModalRef: BsModalRef | undefined;
-  works= signal<Work[]>([]);
   // Настройки пагинации
-  rowsPerPage = 5; // Количество строк на странице
-  currentPage = signal(1); // Текущая страница (сигнал)
-
-  constructor(private workService: WorkService,private modalService: BsModalService) {
+  rowsPerPage = 5;
+  currentPage = signal(1);
+  constructor(protected workService: WorkService,private modalService: BsModalService) {
   }
 
   ngOnInit() {
@@ -33,12 +28,12 @@ export class WorksComponent implements OnInit{
   getPaginatedData() {
     const start = (this.currentPage() - 1) * this.rowsPerPage;
     const end = this.currentPage() * this.rowsPerPage;
-    return this.works().slice(start, end);
+    return this.workService.works().slice(start, end);
   }
 
 
   nextPage(): void {
-    if (this.currentPage() < Math.ceil(this.works().length / this.rowsPerPage)) {
+    if (this.currentPage() < Math.ceil(this.workService.works().length / this.rowsPerPage)) {
       this.currentPage.update(page => page + 1);
     }
   }
@@ -51,22 +46,12 @@ export class WorksComponent implements OnInit{
 
 
   getTotalPages(): number {
-    return Math.ceil(this.works().length / this.rowsPerPage);
+    return Math.ceil(this.workService.works().length / this.rowsPerPage);
   }
 
 
   loadWorks(){
-    this.workService.getWorks().pipe(
-      catchError(err => {
-        console.error("Ошибка при загрузке услуг",err);
-        return of({ message: 'Ошибка', data: [] } as ApiResponse<Work[]>);
-      })
-    ).subscribe(
-      response => {
-        this.workService.works.set(response.data);
-        this.works = this.workService.works;
-      }
-    );
+    this.workService.getWorks();
   }
 
   showWorkDetails(work: Work | null, isEditMode: boolean = false){

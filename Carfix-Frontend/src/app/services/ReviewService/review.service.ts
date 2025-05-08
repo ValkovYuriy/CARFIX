@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Review} from '../../model/Review';
 import {environment} from '../../../environments/environment';
+import {catchError, of} from 'rxjs';
+import {ApiResponse} from '../../model/ApiResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +12,7 @@ export class ReviewService {
 
   baseUrl = `${environment.baseUrl}/api`;
 
+
   constructor(private httpClient: HttpClient) { }
 
   getReviews(){
@@ -17,6 +20,6 @@ export class ReviewService {
   }
 
   createReview(review: Review){
-    return this.httpClient.post<any>(`${this.baseUrl}/reviews`,review);
+    return this.httpClient.post<ApiResponse<Review>>(`${this.baseUrl}/reviews`,review);
   }
 }

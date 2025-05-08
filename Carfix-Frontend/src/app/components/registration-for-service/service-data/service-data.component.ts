@@ -114,31 +114,38 @@ export class ServiceDataComponent implements OnInit {
         noResultsText: 'Результаты не найдены',
         itemSelectText: 'Добавить'
       });
-      this.workService.getWorks().pipe(
-        catchError(err => {
-          console.error("Ошибка при загрузке услуг", err);
-          return of({message: 'Ошибка', data: []} as ApiResponse<Work[]>);
-        })
-      ).subscribe(
-        response => {
-          this.works = response.data;
-          this.works.forEach(function (service) {
-            const option = document.createElement('option');
-            option.value = service.name;
-            option.textContent = service.name;
-            serviceElement.appendChild(option);
-          });
-          choices.setChoices(
-            this.works.map(work => ({
-              value: work.name,
-              label: work.name,
-            })),
-            'value',
-            'label',
-            true
-          );
-        }
+      this.workService.getWorks();
+      this.workService.works().forEach(function (service) {
+              const option = document.createElement('option');
+              option.value = service.name;
+              option.textContent = service.name;
+              serviceElement.appendChild(option);
+      });
+      choices.setChoices(
+        this.workService.works().map(work => ({
+          value: work.name,
+          label: work.name,
+        })),
+        'value',
+        'label',
+        true
       );
+      //   catchError(err => {
+      //     console.error("Ошибка при загрузке услуг", err);
+      //     return of({message: 'Ошибка', data: []} as ApiResponse<Work[]>);
+      //   })
+      // ).subscribe(
+      //   response => {
+      //     this.works = response.data;
+      //     this.works.forEach(function (service) {
+      //       const option = document.createElement('option');
+      //       option.value = service.name;
+      //       option.textContent = service.name;
+      //       serviceElement.appendChild(option);
+      //     });
+
+      //   }
+      // );
     }
   }
 

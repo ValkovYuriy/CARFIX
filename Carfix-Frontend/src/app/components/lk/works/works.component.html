@@ -2,8 +2,13 @@
   <div class="container mt-4">
 
     <div class="d-flex">
-      <h2 class="mb-4">Список услуг</h2>
-      <i class="fas fa-add action-icon action-plus" style="margin-left: auto" (click)="showWorkDetails(null)"> Добавить услугу</i>
+      <h2 >Список услуг</h2>
+<!--      <span class="badge bg-success" style="margin-left: auto">Добавить услугу</span>-->
+
+      <div style="margin-left: auto">
+        <i class="fas fa-add action-icon action-plus" (click)="showWorkDetails(null)">
+        Добавить услугу</i>
+      </div>
     </div>
     <!-- Элементы управления пагинацией -->
     <div class="pagination-controls mb-3">

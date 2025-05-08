@@ -1,7 +1,5 @@
 import {AfterViewInit, Component, ElementRef, OnInit, signal, ViewChild} from '@angular/core';
 import {AuthenticationService} from '../../services/AuthenticationService/authentication.service';
-import {HeaderComponent} from '../header/header.component';
-import {FooterComponent} from '../footer/footer.component';
 import {ReviewService} from '../../services/ReviewService/review.service';
 import {Review} from '../../model/Review';
 import {catchError, of} from 'rxjs';
@@ -58,35 +56,28 @@ export class ReviewsComponent implements OnInit{
   applyFilters(): void {
     let filtered = this.reviews();
 
-    // Фильтрация по рейтингу
     if (this.selectedRating() !== 'all') {
       const rating = parseInt(this.selectedRating(), 10);
       filtered = filtered.filter(review => review.rating === rating);
     }
 
-    // Сортировка по дате
     if (this.selectedSort() === 'newest') {
       filtered = filtered.sort((a, b) => new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime());
     } else if (this.selectedSort() === 'oldest') {
       filtered = filtered.sort((a, b) => new Date(a.reviewDate).getTime() - new Date(b.reviewDate).getTime());
     }
 
-    // Обновляем сигнал с отфильтрованными и отсортированными отзывами
     this.filteredReviews.set(filtered);
   }
 
   updateCounter(){
-    // Получаем доступ к DOM-элементам через nativeElement
     const reviewArea = this.reviewArea.nativeElement;
     const counter = this.counter.nativeElement;
 
-    // Вычисляем оставшееся количество символов
     const remaining = 1000 - reviewArea.value.length;
 
-    // Обновляем текст счетчика
     counter.textContent = `${reviewArea.value.length}/1000`;
 
-    // Опционально: изменение цвета текста, если превышен лимит
     if (remaining < 0) {
       counter.style.color = 'red';
     } else {
@@ -114,7 +105,8 @@ export class ReviewsComponent implements OnInit{
         })
       ).subscribe(response => {
         console.log('Успешное сохранение отзыва');
-        this.reviews.update(reviews => [...reviews, response.data]);
+        this.reviews.update(reviews => [...reviews, response!.data]);
+        this.applyFilters();
       });
     }
     else{
