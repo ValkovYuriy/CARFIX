@@ -11,6 +11,7 @@ import {AuthenticationService} from './services/AuthenticationService/authentica
 import {NgOptimizedImage} from '@angular/common';
 import {TooltipModule} from 'ngx-bootstrap/tooltip';
 import {YandexMapComponent} from './components/yandex-map/yandex-map.component';
+import {PopularWork} from './model/PopularWork';
 
 
 
@@ -24,6 +25,7 @@ import {YandexMapComponent} from './components/yandex-map/yandex-map.component';
 export class AppComponent implements OnInit{
   title = 'CARFIX';
   services= signal<Work[]>([]);
+  popularWorks = signal<PopularWork[]>([]);
   searchData: string[] = [];
   token : any = null;
   decodedToken : {firstName: string, lastName: string} = {firstName: '', lastName: ''};
@@ -36,6 +38,7 @@ export class AppComponent implements OnInit{
 
   ngOnInit() {
     this.loadServices();
+    this.loadPopularWorks();
   }
 
   loadServices(){
@@ -51,6 +54,19 @@ export class AppComponent implements OnInit{
           this.searchData.push(work.name);
         })
         this.workService.setSearchData(this.searchData)
+      }
+    );
+  }
+
+  loadPopularWorks(){
+    this.workService.getPopularWorks().pipe(
+      catchError(err => {
+        console.error("Ошибка при загрузке услуг",err);
+        return of({ message: 'Ошибка', data: [] } as ApiResponse<any>);
+      })
+    ).subscribe(
+      response => {
+        this.popularWorks.set(response.data)
       }
     );
   }

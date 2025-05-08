@@ -1,5 +1,23 @@
-server:
-  port: 8888
+#server:
+#  port: 8888
+
+management:
+  metrics:
+    tags:
+      application: carfix
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - metrics
+          - prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+
 
 spring:
   application:

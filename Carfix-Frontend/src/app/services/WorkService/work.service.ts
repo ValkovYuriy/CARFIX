@@ -4,6 +4,7 @@ import {Work} from '../../model/Work';
 import {ApiResponse} from '../../model/ApiResponse';
 import {BehaviorSubject, tap} from 'rxjs';
 import {environment} from '../../../environments/environment';
+import {PopularWork} from '../../model/PopularWork';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,10 @@ export class WorkService {
 
   getWorks(){
     return this.httpClient.get<ApiResponse<Work[]>>(`${this.baseUrl}/works`);
+  }
+
+  getPopularWorks(){
+    return this.httpClient.get<ApiResponse<PopularWork[]>>(`${this.baseUrl}/works/popular`)
   }
 
   createWork(work: Work){

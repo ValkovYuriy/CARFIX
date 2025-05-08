@@ -1,5 +1,6 @@
 package yuriy.dev.carfixbackend.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -61,8 +62,7 @@ public class Order {
     @Column(name = "description")
     private String description;
 
-
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinTable(
             name = "orders_works",
             joinColumns = @JoinColumn(name = "order_id"),

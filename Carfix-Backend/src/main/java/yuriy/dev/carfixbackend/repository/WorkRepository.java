@@ -3,6 +3,7 @@ package yuriy.dev.carfixbackend.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import yuriy.dev.carfixbackend.dto.PopularWork;
 import yuriy.dev.carfixbackend.model.Work;
 
 import java.util.List;
@@ -28,6 +29,14 @@ public interface WorkRepository extends JpaRepository<Work, UUID> {
             "WHERE wp.date = (SELECT MAX(wp2.date) FROM WorkPrice wp2 WHERE wp2.work.id = w.id) " +
             "AND w.id IN (SELECT ow.id FROM Order o JOIN o.works ow )")
     List<Work> findAllWorksWithPricesForEveryOrder();
+
+    @Query("SELECT new yuriy.dev.carfixbackend.dto.PopularWork(w.name,w.imageUrl, COUNT(*)) " +
+            "FROM Order o JOIN o.works w " +
+            "WHERE EXTRACT(YEAR FROM o.orderDate) = EXTRACT(YEAR FROM CURRENT_DATE) " +
+            "GROUP BY w.name,w.imageUrl " +
+            "ORDER BY COUNT(*) DESC " +
+            "LIMIT 5")
+    List<PopularWork> findMostPopularWorksOfTheYear();
 
 
 }

@@ -7,3 +7,10 @@
   transform: translateY(-10px); /* Поднимаем карточку вверх */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Добавляем тень */
 }
+
+.popular-card-cover {
+  width: 280px;
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+}

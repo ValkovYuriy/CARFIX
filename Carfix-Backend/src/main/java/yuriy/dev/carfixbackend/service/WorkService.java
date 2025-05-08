@@ -3,6 +3,7 @@ package yuriy.dev.carfixbackend.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import yuriy.dev.carfixbackend.dto.PopularWork;
 import yuriy.dev.carfixbackend.dto.WorkDto;
 import yuriy.dev.carfixbackend.mapper.WorkMapper;
 import yuriy.dev.carfixbackend.model.Work;
@@ -29,6 +30,10 @@ public class WorkService {
                 .stream()
                 .map(workMapper::toDto)
                 .toList();
+    }
+
+    public List<PopularWork> findMostPopularWorksOfTheYear(){
+        return workRepository.findMostPopularWorksOfTheYear();
     }
 
     public WorkDto findById(UUID id) {

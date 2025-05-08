@@ -47,7 +47,8 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/auth/*").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/**","/api/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/actuator/**","/api/works","/api/works/*").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/orders").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.POST, "/api/orders").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.POST,"/api/works", "/api/work-prices","/api/marks","/api/models").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/orders/**").hasRole("ADMIN")
@@ -87,7 +88,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200","http://localhost:9090"));
         corsConfiguration.setAllowedMethods(List.of("*"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setAllowCredentials(true);

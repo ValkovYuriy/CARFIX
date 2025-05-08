@@ -184,6 +184,23 @@
           </button>
         </div>
       </section>
+      <section id="popular" style="margin: 3.5rem">
+        <div class="mb-3">
+          <h2 class="pb-2 border-bottom text-bisque">Топ самых популярных услуг за год</h2>
+        </div>
+        <div class="row row-cols-1 row-cols-lg-5 align-items-stretch g-4" id="popular-works-container">
+          @for (work of popularWorks(); track work.name) {
+            <div class="col" id="${work.id}">
+              <div class="card card-hover popular-card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
+                   [style.background-image]="'url(' + work.imageUrl + ')'" style="background-size: cover;" >
+                <div class="d-flex flex-column h-100 p-5 pb-3 text-bisque text-shadow-1">
+                  <h3 class="pt-5 mt-5 mb-4  lh-1 fw-bold" style="color: bisque">{{ work.name }}</h3>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
       <section id="contacts">
         <div class="container text-white" style="margin-bottom: 6rem!important;">
           <h1 class="text-white">Контакты</h1>

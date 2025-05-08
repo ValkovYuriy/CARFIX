@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import yuriy.dev.carfixbackend.dto.PopularWork;
 import yuriy.dev.carfixbackend.dto.WorkDto;
 import yuriy.dev.carfixbackend.dto.response.ApiResponseDto;
 import yuriy.dev.carfixbackend.service.WorkService;
@@ -28,6 +29,11 @@ public class WorkController {
     public ResponseEntity<ApiResponseDto<List<WorkDto>>> findAllWorks() {
         List<WorkDto> works = workService.findAll();
         return ResponseEntity.ok(new ApiResponseDto<>("OK", works));
+    }
+
+    @GetMapping("/popular")
+    public ResponseEntity<ApiResponseDto<List<PopularWork>>> findPopularWorks() {
+        return ResponseEntity.ok(new ApiResponseDto<>("OK",workService.findMostPopularWorksOfTheYear()));
     }
 
     @GetMapping("/{id}")
