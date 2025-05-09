@@ -4,6 +4,7 @@ package yuriy.dev.carfixbackend.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import yuriy.dev.carfixbackend.dto.OrderDto;
 import yuriy.dev.carfixbackend.dto.enums.Status;
 import yuriy.dev.carfixbackend.mapper.CarMapper;
@@ -15,6 +16,7 @@ import yuriy.dev.carfixbackend.repository.CarRepository;
 import yuriy.dev.carfixbackend.repository.OrderRepository;
 import yuriy.dev.carfixbackend.repository.WorkRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -31,6 +33,7 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final WorkRepository workRepository;
     private final CarRepository carRepository;
+    private final EmailService emailService;
 
     public List<OrderDto> findAllOrders(UUID userId) {
         List<Work> works = workRepository.findAllWorksWithPricesForEveryOrder();
@@ -56,6 +59,7 @@ public class OrderService {
         return orders.stream().map(orderMapper::toDto).toList();
     }
 
+    @Transactional
     public OrderDto addOrder(OrderDto orderDto) {
         Order order = orderMapper.toOrder(orderDto);
         Car car = carRepository.findByVinNumber(orderDto.carDto().vinNumber()).orElse(null);
@@ -65,7 +69,20 @@ public class OrderService {
             Car savedCar = carRepository.save(carMapper.toCar(orderDto.carDto()));
             order.setCar(savedCar);
         }
-        return orderMapper.toDto(orderRepository.save(order));
+        if(orderDto.works().isEmpty()){
+            order.setWorks(List.of(workRepository.findByWorkName("Диагностика автомобиля")));
+        }
+        order.setPrice(order.getWorks().stream().map(Work::getWorkPrice).reduce(BigDecimal.valueOf(0), BigDecimal::add));
+        Order savedOrder =  orderRepository.save(order);
+        String message = "Заказ на обслуживание автомобиля "
+                + savedOrder.getCar().getModel().getMark().getMarkName()
+                + " " + savedOrder.getCar().getModel().getModelName()
+                + " успешно сформирован и имеет статус " + savedOrder.getStatus().getDisplayName();
+        emailService.sendEmailAsync(
+                savedOrder.getUser().getUsername(),
+                "Заказ на обслуживание сформирован",
+                 message);
+        return orderMapper.toDto(savedOrder);
     }
 
     public OrderDto updateOrder(UUID id, OrderDto orderDto) {
@@ -81,11 +98,13 @@ public class OrderService {
         return orderMapper.toDto(updatedOrder);
     }
 
+    @Transactional
     public OrderDto updateOrderStatus(UUID id, Status status) {
         Order order = orderRepository.findById(id).orElse(null);
         if (order != null) {
             order.setStatus(status);
             Order updatedOrder = orderRepository.save(order);
+            emailService.sendEmailAsync(updatedOrder.getUser().getUsername(),"Статус заказа изменен", "Статус заказа: " + updatedOrder.getStatus().getDisplayName());
             return orderMapper.toDto(updatedOrder);
         }
         return null;

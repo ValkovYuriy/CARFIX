@@ -61,7 +61,7 @@ export class ServiceDataComponent implements OnInit {
         }
       }
       this.interimTranscript = interim;
-      this.cdr.detectChanges(); // Принудительное обновление интерфейса
+      this.cdr.detectChanges();
     };
 
     this.recognition.onerror = (event: any) => {
@@ -69,7 +69,6 @@ export class ServiceDataComponent implements OnInit {
       this.stopRecording();
     };
   }
-
 
 
   ngOnInit() {
@@ -130,22 +129,7 @@ export class ServiceDataComponent implements OnInit {
         'label',
         true
       );
-      //   catchError(err => {
-      //     console.error("Ошибка при загрузке услуг", err);
-      //     return of({message: 'Ошибка', data: []} as ApiResponse<Work[]>);
-      //   })
-      // ).subscribe(
-      //   response => {
-      //     this.works = response.data;
-      //     this.works.forEach(function (service) {
-      //       const option = document.createElement('option');
-      //       option.value = service.name;
-      //       option.textContent = service.name;
-      //       serviceElement.appendChild(option);
-      //     });
-
-      //   }
-      // );
+      this.works = this.workService.works();
     }
   }
 

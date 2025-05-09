@@ -38,5 +38,7 @@ public interface WorkRepository extends JpaRepository<Work, UUID> {
             "LIMIT 5")
     List<PopularWork> findMostPopularWorksOfTheYear();
 
-
+    @Query("SELECT new Work(w.id,w.name,w.description,wp.price,w.imageUrl) from Work w join WorkPrice wp on w.id = wp.work.id " +
+                      "where w.name = :name and wp.date = (select MAX(wp2.date) from WorkPrice wp2 where wp2.work.id = w.id) ")
+    Work findByWorkName(String name);
 }

@@ -46,7 +46,7 @@ public class SecurityConfig implements WebMvcConfigurer {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/*").permitAll()
+                        .requestMatchers("/auth/*","/api/send-email").permitAll()
                         .requestMatchers(HttpMethod.GET,"/actuator/**","/api/works","/api/works/*","/api/reviews").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/orders").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.POST, "/api/orders").hasAnyRole("ADMIN", "USER")

@@ -3,8 +3,6 @@
 
     <div class="d-flex">
       <h2 >Список услуг</h2>
-<!--      <span class="badge bg-success" style="margin-left: auto">Добавить услугу</span>-->
-
       <div style="margin-left: auto">
         <i class="fas fa-add action-icon action-plus" (click)="showWorkDetails(null)">
         Добавить услугу</i>
@@ -12,13 +10,13 @@
     </div>
     <!-- Элементы управления пагинацией -->
     <div class="pagination-controls mb-3">
-      <button class="btn btn-secondary" (click)="prevPage()" [disabled]="currentPage() === 1">
+      <button class="btn custom-btn" (click)="prevPage()" [disabled]="currentPage() === 1">
         ← Предыдущая
       </button>
       <span class="mx-3">
       Страница {{ currentPage() }} из {{ getTotalPages() }}
     </span>
-      <button class="btn btn-secondary" (click)="nextPage()" [disabled]="currentPage() === getTotalPages()">
+      <button class="btn custom-btn" (click)="nextPage()" [disabled]="currentPage() === getTotalPages()">
         Следующая →
       </button>
     </div>

@@ -22,6 +22,8 @@ export class OrdersComponent implements OnInit{
   orders = signal<Order[]>([]);
   decodedToken: any = null;
   bsModalRef: BsModalRef | undefined;
+  rowsPerPage = 10;
+  currentPage = signal(1);
 
   constructor(private orderService: OrderService, protected authService: AuthenticationService, private modalService: BsModalService) {
 
@@ -31,6 +33,29 @@ export class OrdersComponent implements OnInit{
   ngOnInit() {
     this.decodedToken = this.authService.decodeToken();
     this.getAllOrders();
+  }
+
+  getPaginatedData() {
+    const start = (this.currentPage() - 1) * this.rowsPerPage;
+    const end = this.currentPage() * this.rowsPerPage;
+    return this.orders().slice(start, end);
+  }
+
+  nextPage(): void {
+    if (this.currentPage() < Math.ceil(this.orders().length / this.rowsPerPage)) {
+      this.currentPage.update(page => page + 1);
+    }
+  }
+
+  prevPage(): void {
+    if (this.currentPage() > 1) {
+      this.currentPage.update(page => page - 1);
+    }
+  }
+
+
+  getTotalPages(): number {
+    return Math.ceil(this.orders().length / this.rowsPerPage);
   }
 
   getAllOrders(){

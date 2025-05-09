@@ -2,7 +2,6 @@
   <div class="container container-custom w-75">
     <h1 class="text-center mb-4">Отзывы о нашем автосервисе</h1>
 
-    <!-- Фильтры -->
     <div class="row mb-4 justify-content-center">
       <div class="col-md-4 mb-4">
         <select class="form-select" id="ratingFilter" [(ngModel)]="selectedRating"
@@ -23,7 +22,7 @@
         </select>
       </div>
       <div class="col-md-2">
-        <button routerLink="/" class="btn btn-primary" >На главную</button>
+        <button routerLink="/" class="btn custom-btn" >На главную</button>
       </div>
       <div class="row" id="reviewsContainer">
         @for (review of filteredReviews(); track review.id){
@@ -44,9 +43,7 @@
 
     </div>
 
-    <!-- Список отзывов -->
 
-    <!-- Форма для нового отзыва -->
     @if(authService.isLoggedIn()){
       <div class="container mt-5"  >
         <h2 class="text-center mb-4">Оставьте свой отзыв</h2>

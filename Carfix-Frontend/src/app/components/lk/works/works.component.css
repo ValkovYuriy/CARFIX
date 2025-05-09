@@ -46,12 +46,6 @@
   color: #e31025;
 }
 
-.pagination-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
 
 .plus-btn {
   background-color: #f4f4f4;

@@ -44,9 +44,9 @@ public class AuthenticationService {
                 .phoneNumber(request.getPhoneNumber())
                 .build();
         UserDto userDto = userMapper.toDto(user);
-        userService.addUser(userDto);
+        UserDto savedUser = userService.addUser(userDto);
 
-        var jwt = jwtUtil.generateToken(user);
+        var jwt = jwtUtil.generateToken(userMapper.toUser(savedUser));
         return new JwtAuthenticationResponse(jwt);
     }
 

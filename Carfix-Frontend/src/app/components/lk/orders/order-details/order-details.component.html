@@ -7,7 +7,6 @@
 </div>
 @if (order) {
   <div class="modal-body">
-    <!-- Основная информация -->
     <div class="mb-3">
       <h6 class="text-center">Основная информация</h6>
       <div class="row">
@@ -20,7 +19,7 @@
         <div class="col-md-4">
           <div class="d-flex flex-column">
             <span class="heading d-block">Дата и время заказа</span>
-            <span class="subheadings">{{ order.orderDate | date: 'dd/MM/yyyy HH:mm:ss' }}</span>
+            <span class="subheadings">{{ order.orderDate | date: 'dd/MM/yyyy HH:mm' }}</span>
           </div>
         </div>
         <div class="col-md-4">
@@ -32,7 +31,7 @@
                 <i class="fas fa-circle text-warning"></i><span> В обработке</span>
               }
               @case ('ACCEPTED') {
-                <i class="fas fa-circle text-success"></i><span> Подтвержден</span>
+                <i class="fas fa-circle text-success"></i><span> Принят</span>
               }
               @case ('REJECTED') {
                 <i class="fas fa-circle text-danger"></i><span> Отклонен</span>
@@ -63,7 +62,6 @@
       </div>
     </div>
 
-    <!-- Информация о клиенте -->
     <div class="mb-3">
       <h6 class="text-center">Информация о клиенте</h6>
       <div class="row">
@@ -82,7 +80,6 @@
       </div>
     </div>
 
-    <!-- Выполненные работы -->
     <div class="mb-3">
       <h6 class="text-center">Выполненные работы</h6>
       <ul>

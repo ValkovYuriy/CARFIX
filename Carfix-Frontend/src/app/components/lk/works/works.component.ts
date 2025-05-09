@@ -15,7 +15,6 @@ import {WorkDetailsComponent} from './work-details/work-details.component';
 export class WorksComponent implements OnInit{
 
   bsModalRef: BsModalRef | undefined;
-  // Настройки пагинации
   rowsPerPage = 5;
   currentPage = signal(1);
   constructor(protected workService: WorkService,private modalService: BsModalService) {

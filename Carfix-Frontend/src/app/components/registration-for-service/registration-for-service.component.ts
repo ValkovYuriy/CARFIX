@@ -95,9 +95,9 @@ export class RegistrationForServiceComponent implements OnInit {
     this.order.description = serviceData.description;
     this.order.works = serviceData.works;
     this.order.price = 0;
-    this.order.works.forEach(work => {
-      this.order.price += work.workPrice;
-    })
+    // this.order.works.forEach(work => {
+    //   this.order.price += work.workPrice;
+    // })
     console.log(this.order);
     this.orderService.createOrder(this.order).pipe(
       catchError(err => {
