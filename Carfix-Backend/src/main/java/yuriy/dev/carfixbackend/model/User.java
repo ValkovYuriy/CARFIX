@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import yuriy.dev.carfixbackend.auth.Role;
+import yuriy.dev.carfixbackend.util.StringCryptoConverter;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,12 +31,15 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @Convert(converter = StringCryptoConverter.class)
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @Convert(converter = StringCryptoConverter.class)
     @Column(name = "first_name")
     private String firstName;
 
+    @Convert(converter = StringCryptoConverter.class)
     @Column(name = "last_name")
     private String lastName;
 
