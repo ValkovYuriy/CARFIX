@@ -1,41 +1,67 @@
 <div id="serv" style="font-size: 18px;">
-  <h4>Введите данные для записи на обслуживание</h4>
-  <div class="mb-3">
-    <div class="buttons" >
-      <label for="description" class="form-label">Опишите проблему:</label>
+    <h4>Введите данные для записи на обслуживание</h4>
+    <div class="mb-3">
+      <div class="buttons">
+        <label for="description" class="form-label">Опишите проблему:</label>
         <div class="icon">
           <img ngSrc="/assets/images/bars.svg" alt="Recording" *ngIf="isRecording" height="40" width="35"/>
         </div>
         <i #microIcon
-          id="micro-icon"
-          class="fa fa-microphone micro m-lg-1"
-          (click)="toggleRecording()"
-          [class.micro-listening]="isRecording"><span>{{ isRecording ? '   Остановить' : '   Голосовой ввод' }}</span>
+           id="micro-icon"
+           class="fa fa-microphone micro m-lg-1"
+           (click)="toggleRecording()"
+           [class.micro-listening]="isRecording"><span>{{ isRecording ? '   Остановить' : '   Голосовой ввод' }}</span>
         </i>
-      <button class="btn btn-dark btn-sm mb-2" (click)="clearText()">
-        <span>Очистить</span>
-      </button>
-    </div>
+        <button class="btn btn-dark btn-sm mb-2" (click)="clearText()">
+          <span>Очистить</span>
+        </button>
+      </div>
 
-    <div class="input-group">
+      <div class="input-group">
     <textarea #descriptionInput
-      id="description"
-      name="description"
-      rows="4"
-      cols="50"
-      class="form-control"
-      [value]="combinedText">
+              id="description"
+              name="description"
+              rows="4"
+              cols="50"
+              class="form-control"
+              [value]="combinedText">
     </textarea>
+      </div>
     </div>
-  </div>
-  <div class="mb-3">
-    <label for="service" class="form-label" >Выберите услуги:</label>
-    <select id="service" class="custom-select d-block w-100 js-choice" name="service" required multiple [(ngModel)]="selectedWorks"></select>
-  </div>
-  <div class="mb-3">
-    <label for="appointment-date">Дата и время записи</label>
-    <input class="form-control" type="datetime-local" id="appointment-date" name="appointment-date"
-           required [(ngModel)]="serviceData.orderDate">
-  </div>
+    <div class="mb-3">
+      <label for="service" class="form-label">Выберите услуги:</label>
+      <select id="service" class="custom-select d-block w-100 js-choice" name="service" required multiple
+              [(ngModel)]="selectedWorks"></select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label" >Выберите дату и время записи:</label>
+      <div>
+        <form [formGroup]="datetimeForm">
+          <mat-form-field>
+            <mat-label>Выберите дату</mat-label>
+            <input formControlName="date" matInput [matDatepicker]="datepicker"
+                   [matDatepickerFilter]="dateFilter" [min]="minDate" [max]="maxDate"
+                   (dateChange)="onDateChange('change',$event)">
+            <mat-datepicker #datepicker/>
+            <mat-datepicker-toggle [for]="datepicker" matSuffix/>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Выберите время</mat-label>
+            <input formControlName="time"
+                   matInput
+                   [matTimepicker]="timepicker"
+                   matTimepickerMin="8:00"
+                   matTimepickerMax="18:00"
+            >
+            <mat-timepicker #timepicker/>
+            <mat-timepicker-toggle [for]="$any(timepicker)" matSuffix/>
+            @if (datetimeForm.get('time')?.errors?.['timeConflict']) {
+              <mat-error>Это время уже занято</mat-error>
+            }
+          </mat-form-field>
+        </form>
+      </div>
+    </div>
 </div>
 

@@ -29,7 +29,6 @@ import yuriy.dev.carfixbackend.service.UserService;
 import yuriy.dev.carfixbackend.service.WorkService;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -88,7 +87,7 @@ public class OrdersTest {
                 null,
                 new CarDto(null, "ABC123", "1HGCM82633A123410",modelDto),
                 userDto,
-                Timestamp.valueOf(LocalDateTime.now()),
+                LocalDateTime.now(),
                 new BigDecimal("3200"),
                 Status.PENDING,
                 "Test order description",
@@ -142,7 +141,7 @@ public class OrdersTest {
                 null,
                 carDto,
                 userDto,
-                Timestamp.valueOf(LocalDateTime.now()),
+                LocalDateTime.now(),
                 new BigDecimal("3200"),
                 Status.ACCEPTED,
                 "Order with existing car",

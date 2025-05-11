@@ -17,6 +17,10 @@ export class OrderService {
     return userId === null ? this.httpClient.get<any>(`${this.baseUrl}/orders`) : this.httpClient.get<any>(`${this.baseUrl}/orders?userId=${userId}`)
   }
 
+  findAllOrderDates(){
+    return this.httpClient.get<any>(`${this.baseUrl}/orders/dates`);
+  }
+
   updateOrderStatus(id: string, status: Status){
     const headers = { 'Content-Type': 'application/json' };
     return this.httpClient.patch<any>(`${this.baseUrl}/orders/${id}`,`"${status}"`, { headers });

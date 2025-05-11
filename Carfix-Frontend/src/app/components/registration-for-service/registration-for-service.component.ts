@@ -95,9 +95,6 @@ export class RegistrationForServiceComponent implements OnInit {
     this.order.description = serviceData.description;
     this.order.works = serviceData.works;
     this.order.price = 0;
-    // this.order.works.forEach(work => {
-    //   this.order.price += work.workPrice;
-    // })
     console.log(this.order);
     this.orderService.createOrder(this.order).pipe(
       catchError(err => {
@@ -116,7 +113,12 @@ export class RegistrationForServiceComponent implements OnInit {
         break;
       }
       case 1: {
-        this.order.userDto = this.personalData.getUserData();
+        if(this.personalData.getUserData() === null){
+          this.current -= 1;
+        }else{
+          this.order.userDto = this.personalData.getUserData()!;
+          this.personalData.updateUserData();
+        }
         break;
       }
       case 2: {
@@ -124,7 +126,6 @@ export class RegistrationForServiceComponent implements OnInit {
         break;
       }
       default: {
-
         this.index = 'error';
       }
     }

@@ -1,27 +1,81 @@
 <h4>Введите ваши личные данные</h4>
 <div class="row w-100" style="font-size: 18px">
-  <div class="form-outline mb-3">
-    <label for="firstName" class="form-label">Имя</label>
-    <input id="firstName" type="text" name="firstName"
-           class="form-control form-control-lg" [(ngModel)]="user.firstName" required>
-  </div>
-  <div data-mdb-input-init class="form-outline mb-3">
-    <label for="lastName" class="form-label">Фамилия</label>
-    <input id="lastName" class="form-control form-control-lg" type="text" aria-label="Фамилия"
-            [(ngModel)]="user.lastName" required/>
-  </div>
-  <div data-mdb-input-init class="form-outline mb-3">
-    <label for="phone-number" class="form-label">Номер телефона</label>
-    <input id="phone-number" mask="(000) 000-00-00" prefix="+7"
-           [showMaskTyped]="true" type="text" name="phoneNumber" class="form-control form-control-lg"
-           [(ngModel)]="user.phoneNumber" required>
-  </div>
-  <div data-mdb-input-init class="form-outline mb-3">
-    <label class="form-label" for="email">Адрес электронной почты</label>
-    <input type="email" id="email" name="username" class="form-control form-control-lg"
-           placeholder="name@example.com" [(ngModel)]="user.username" required/>
-    <div class="invalid-feedback">
-      Введите корректный email.
+  <form [formGroup]="personalData">
+    <div class="form-outline mb-3">
+      <label for="firstName" class="form-label">Имя</label>
+      <input id="firstName" type="text" name="firstName"
+             class="form-control form-control-lg" formControlName="firstName" required
+             [ngClass]="{ 'is-invalid': personalData.get('firstName')?.invalid && personalData.get('firstName')?.touched }"
+      >
+      @if (personalData.get('firstName')?.invalid && personalData.get('firstName')?.touched) {
+        @if (personalData.get('firstName')?.errors?.['minlength']) {
+          <div class="invalid-feedback">
+            Введите корректное имя (минимум 2 символа).
+          </div>
+        } @else if (personalData.get('firstName')?.errors?.['maxlength']) {
+          <div class="invalid-feedback">
+            Введите корректное имя (максимум 100 символов).
+          </div>
+        }
+      }
     </div>
-  </div>
+    <div data-mdb-input-init class="form-outline mb-3">
+      <label for="lastName" class="form-label">Фамилия</label>
+      <input id="lastName" class="form-control form-control-lg" type="text" aria-label="Фамилия"
+             formControlName="lastName" required
+             [ngClass]="{ 'is-invalid': personalData.get('lastName')?.invalid && personalData.get('lastName')?.touched }"
+      />
+      @if (personalData.get('lastName')?.invalid && personalData.get('lastName')?.touched) {
+        @if (personalData.get('lastName')?.errors?.['minlength']) {
+          <div class="invalid-feedback">
+            Введите корректную фамилию (минимум 2 символа).
+          </div>
+        } @else if (personalData.get('lastName')?.errors?.['maxlength']) {
+          <div class="invalid-feedback">
+            Введите корректную фамилию (максимум 100 символов).
+          </div>
+        }
+      }
+    </div>
+    <div data-mdb-input-init class="form-outline mb-3">
+      <label for="phone-number" class="form-label">Номер телефона</label>
+      <input id="phone-number" mask="(000) 000-00-00" prefix="+7"
+             [showMaskTyped]="true" type="text" name="phoneNumber" class="form-control form-control-lg"
+             formControlName="phoneNumber" required
+             [ngClass]="{ 'is-invalid': personalData.get('phoneNumber')?.invalid && personalData.get('phoneNumber')?.touched }"
+      >
+      <div class="invalid-feedback">
+        Введите корректный номер телефона (например, +79991234567).
+      </div>
+    </div>
+    <div data-mdb-input-init class="form-outline mb-3">
+      <label class="form-label" for="email">Адрес электронной почты</label>
+      <input type="email" id="email" name="username" class="form-control form-control-lg"
+             placeholder="name@example.com" formControlName="email" required
+             [ngClass]="{ 'is-invalid': personalData.get('email')?.invalid && personalData.get('email')?.touched }"
+      />
+      @if (personalData.get('email')?.errors?.['required']) {
+        <div class="invalid-feedback">
+          Адрес электронной почты обязателен для заполнения.
+        </div>
+      } @else if (personalData.get('email')?.errors?.['email']){
+        <div class="invalid-feedback">
+          Введите корректный адрес электронной почты
+        </div>
+      } @else if (personalData.get('email')?.errors?.['minlength']) {
+        <div class="invalid-feedback">
+          Адрес электронной почты должен содержать минимум 5 символов.
+        </div>
+      } @else if (personalData.get('email')?.errors?.['maxlength']) {
+        <div class="invalid-feedback">
+          Адрес электронной почты должен содержать не более 50 символов.
+        </div>
+      }
+    </div>
+    @if(errorMessage){
+      <div class="alert alert-danger mt-3">
+        {{errorMessage}}
+      </div>
+    }
+  </form>
 </div>

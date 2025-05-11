@@ -9,6 +9,7 @@ import yuriy.dev.carfixbackend.dto.enums.Status;
 import yuriy.dev.carfixbackend.dto.response.ApiResponseDto;
 import yuriy.dev.carfixbackend.service.OrderService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +26,11 @@ public class OrderController {
         return ResponseEntity.ok(new ApiResponseDto<>("OK",list));
     }
 
+    @GetMapping("/dates")
+    public ResponseEntity<ApiResponseDto<List<LocalDateTime>>> findAllOrderDates(){
+        List<LocalDateTime> list = orderService.findOrderDates();
+        return ResponseEntity.ok(new ApiResponseDto<>("OK",list));
+    }
     
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponseDto<OrderDto>> findOrderById(@PathVariable UUID id){

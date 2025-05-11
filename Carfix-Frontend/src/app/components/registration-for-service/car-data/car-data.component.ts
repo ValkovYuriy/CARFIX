@@ -5,9 +5,10 @@ import {ApiResponse} from '../../../model/ApiResponse';
 import {MarkService} from '../../../services/MarkService/mark.service';
 import {Model} from '../../../model/Model';
 import {NgForOf} from '@angular/common';
-import {FormsModule} from '@angular/forms';
+import {FormGroup, FormsModule} from '@angular/forms';
 import {Car} from '../../../model/Car';
 import {User} from '../../../model/User';
+import {CarDataForm} from '../../../form-groups/data-forms';
 
 @Component({
   selector: 'app-car-data',
@@ -28,6 +29,8 @@ export class CarDataComponent implements OnInit{
     modelDto: null
   };
   marks: Mark[] = [];
+
+  carDataForm: FormGroup = CarDataForm.create();
 
   selectedBrand: string | null = null;
   selectedModel: string | null = null;

@@ -8,11 +8,14 @@ import {authInterceptor} from './interceptor/auth.interceptor';
 import { provideNzIcons } from 'ng-zorro-antd/icon';
 import { UserOutline, CarOutline, CheckCircleOutline } from '@ant-design/icons-angular/icons';
 
-import {provideImgixLoader} from '@angular/common';
-import {TooltipModule} from 'ngx-bootstrap/tooltip';
+import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
+import {provideAnimations} from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'ru-RU' },
+    provideAnimations(),
+    provideNativeDateAdapter(),
     provideNzIcons([UserOutline,CarOutline,CheckCircleOutline]),
     provideEnvironmentNgxMask(),
     provideHttpClient(withInterceptors([authInterceptor])),

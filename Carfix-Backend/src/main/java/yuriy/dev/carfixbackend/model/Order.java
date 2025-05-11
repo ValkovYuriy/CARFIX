@@ -22,7 +22,7 @@ import lombok.Setter;
 import yuriy.dev.carfixbackend.dto.enums.Status;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -50,7 +50,7 @@ public class Order {
     private User user;
 
     @Column(name = "order_date", nullable = false)
-    private Timestamp orderDate;
+    private LocalDateTime orderDate;
 
     @Column(name = "price")
     private BigDecimal price;

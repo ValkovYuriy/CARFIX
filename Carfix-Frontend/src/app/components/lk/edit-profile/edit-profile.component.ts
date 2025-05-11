@@ -7,6 +7,7 @@ import {UserService} from '../../../services/UserService/user.service';
 import {AuthenticationService} from '../../../services/AuthenticationService/authentication.service';
 import {catchError, of} from 'rxjs';
 import {getXHRResponse} from 'rxjs/internal/ajax/getXHRResponse';
+import {PersonalDataForm} from '../../../form-groups/data-forms';
 
 @Component({
   selector: 'app-edit-profile',
@@ -23,15 +24,16 @@ export class EditProfileComponent implements OnInit{
 
   errorMessage: string | null = null;
 
-  editProfile: FormGroup = new FormGroup({
-      email: new FormControl('', [
-        Validators.email,Validators.minLength(5),Validators.maxLength(50)
-      ]),
-      phoneNumber: new FormControl('',[Validators.pattern(/^\+?[0-9]{10,15}$/)]),
-      firstName: new FormControl('',[Validators.minLength(2),Validators.maxLength(100)]),
-      lastName: new FormControl('',[Validators.minLength(2),Validators.maxLength(100)])
-    }
-  );
+  editProfile: FormGroup = PersonalDataForm.create();
+  // new FormGroup({
+  //     email: new FormControl('', [
+  //       Validators.email,Validators.minLength(5),Validators.maxLength(50)
+  //     ]),
+  //     phoneNumber: new FormControl('',[Validators.pattern(/^\+?[0-9]{10,15}$/)]),
+  //     firstName: new FormControl('',[Validators.minLength(2),Validators.maxLength(100)]),
+  //     lastName: new FormControl('',[Validators.minLength(2),Validators.maxLength(100)])
+  //   }
+  // );
 
   ngOnInit() {
     const decodedToken = this.authService.decodeToken();
@@ -61,10 +63,9 @@ export class EditProfileComponent implements OnInit{
           return of(null);
         })
       ).subscribe(response =>{
-        console.log('Данные успешно обновлены', response.data);
+        console.log('Данные успешно обновлены');
         localStorage.setItem('token',response.data);
       });
     }
-
   }
 }

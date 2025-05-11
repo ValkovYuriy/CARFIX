@@ -17,6 +17,7 @@ import yuriy.dev.carfixbackend.repository.OrderRepository;
 import yuriy.dev.carfixbackend.repository.WorkRepository;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -45,18 +46,8 @@ public class OrderService {
         return getOrderDtos(works, orders);
     }
 
-    private List<OrderDto> getOrderDtos(List<Work> works, List<Order> orders) {
-        Map<UUID, Work> workById = works.stream()
-                .collect(Collectors.toMap(Work::getId, work -> work));
-        orders.stream()
-                .filter(order -> order.getWorks() != null && !order.getWorks().isEmpty())
-                .forEach(order -> {
-                    List<Work> updatedWorks = order.getWorks().stream()
-                            .map(work -> workById.getOrDefault(work.getId(), work))
-                            .collect(Collectors.toList());
-                    order.setWorks(updatedWorks);
-                });
-        return orders.stream().map(orderMapper::toDto).toList();
+    public List<LocalDateTime> findOrderDates() {
+        return orderRepository.findOrderDates();
     }
 
     @Transactional
@@ -116,5 +107,19 @@ public class OrderService {
 
     public OrderDto findOrderById(UUID id) {
         return orderRepository.findById(id).map(orderMapper::toDto).orElse(null);
+    }
+
+    private List<OrderDto> getOrderDtos(List<Work> works, List<Order> orders) {
+        Map<UUID, Work> workById = works.stream()
+                .collect(Collectors.toMap(Work::getId, work -> work));
+        orders.stream()
+                .filter(order -> order.getWorks() != null && !order.getWorks().isEmpty())
+                .forEach(order -> {
+                    List<Work> updatedWorks = order.getWorks().stream()
+                            .map(work -> workById.getOrDefault(work.getId(), work))
+                            .collect(Collectors.toList());
+                    order.setWorks(updatedWorks);
+                });
+        return orders.stream().map(orderMapper::toDto).toList();
     }
 }
