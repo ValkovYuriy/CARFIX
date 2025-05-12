@@ -1,42 +1,56 @@
 <div id="carData" style="font-size: 18px">
   <h4>Введите данные вашего автомобиля</h4>
-  <div class="row w-100">
-    <div data-mdb-input-init class="form-outline mb-3">
-      <label for="vin" class="form-label">VIN-номер</label>
-      <input type="text" class="form-control form-control-lg" id="vin" required minlength="17" [(ngModel)]="car.vinNumber">
-      <div class="invalid-feedback">
-        Обязательно введите VIN-номер.
+  <form [formGroup]="carDataForm" >
+    <div class="row w-100">
+      <div data-mdb-input-init class="form-outline mb-3">
+        <label for="vin" class="form-label">VIN-номер</label>
+        <input type="text" class="form-control form-control-lg" id="vin" required minlength="17"
+               formControlName="vin" (blur)="checkVin()">
+        @if(carDataForm.get('vin')?.invalid && carDataForm.get('vin')?.touched){
+          <div class="invalid-feedback">
+            Обязательно введите корректный VIN-номер.
+          </div>
+        }
+
+      </div>
+      <div data-mdb-input-init class="form-outline mb-3">
+        <label for="gos">Государственный номер</label>
+        <input type="text" class="form-control form-control-lg" id="gos" placeholder="" required minlength="6"
+               formControlName="gov" >
+        @if (carDataForm.get('gov')?.invalid && carDataForm.get('gov')?.touched){
+          <div  class="invalid-feedback">
+            Обязательно введите государственный номер.
+          </div>
+        }
       </div>
     </div>
-    <div data-mdb-input-init class="form-outline mb-3">
-      <label for="gos">Государственный номер</label>
-      <input type="text" class="form-control form-control-lg" id="gos" placeholder="" required minlength="6" [(ngModel)]="car.govNumber">
-      <div class="invalid-feedback">
-        Обязательно введите государственный номер.
+    <div class="row w-100">
+      <div data-mdb-input-init class="form-outline mb-3">
+        <label for="car-brand">Марка автомобиля</label>
+        <select class="custom-select d-block w-100" id="car-brand" required formControlName="mark"
+                 (change)="onBrandChange($event)">
+          <option value="">Выберите марку...</option>
+          <option *ngFor="let mark of marks" [value]="mark.markName">{{ mark.markName }}</option>
+        </select>
+        @if(carDataForm.get('mark')?.invalid && carDataForm.get('mark')?.touched){
+          <div class="invalid-feedback">
+            Пожалуйста, выберите марку автомобиля.
+          </div>
+        }
+      </div>
+      <div data-mdb-input-init class="form-outline mb-3">
+        <label for="car-model">Модель автомобиля</label>
+        <select class="custom-select d-block w-100" id="car-model" required formControlName="model">
+          <option value="" >{{ selectedBrand ? 'Выберите модель...' : 'Сначала выберите марку' }}</option>
+          <option *ngFor="let model of models" [value]="model.value">{{ model.label }}</option>
+        </select>
+        @if(carDataForm.get('model')?.invalid && carDataForm.get('model')?.touched){
+          <div class="invalid-feedback">
+            Пожалуйста, выберите модель.
+          </div>
+        }
       </div>
     </div>
-  </div>
-  <div class="row w-100">
-    <div data-mdb-input-init class="form-outline mb-3">
-      <label for="car-brand">Марка автомобиля</label>
-      <select class="custom-select d-block w-100" id="car-brand" required [(ngModel)]="selectedBrand" (change)="onBrandChange(selectedBrand)">
-        <option value="">Выберите марку...</option>
-        <option *ngFor="let mark of marks" [value]="mark.markName">{{ mark.markName }}</option>
-      </select>
-      <div class="invalid-feedback">
-        Пожалуйста выберите марку автомобиля
-      </div>
-    </div>
-    <div data-mdb-input-init class="form-outline mb-3">
-      <label for="car-model">Модель автомобиля</label>
-      <select class="custom-select d-block w-100" id="car-model" required [(ngModel)]="selectedModel" [disabled]="!selectedBrand" (change)="onModelChange(selectedModel)">
-        <option value="" disabled hidden>{{ selectedBrand ? 'Выберите модель...' : 'Сначала выберите марку' }}</option>
-        <option *ngFor="let model of models" [value]="model.value">{{ model.label }}</option>
-      </select>
-      <div class="invalid-feedback">
-        Пожалуйста выберите модель.
-      </div>
-    </div>
-  </div>
+  </form>
 </div>
 

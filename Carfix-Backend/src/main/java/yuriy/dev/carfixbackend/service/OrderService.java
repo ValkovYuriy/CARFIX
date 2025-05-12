@@ -18,6 +18,8 @@ import yuriy.dev.carfixbackend.repository.WorkRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -35,6 +37,7 @@ public class OrderService {
     private final WorkRepository workRepository;
     private final CarRepository carRepository;
     private final EmailService emailService;
+    private final UserService userService;
 
     public List<OrderDto> findAllOrders(UUID userId) {
         List<Work> works = workRepository.findAllWorksWithPricesForEveryOrder();
@@ -51,8 +54,17 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderDto addOrder(OrderDto orderDto) {
+    public OrderDto addOrder(OrderDto orderDto, int timezoneOffset) {
         Order order = orderMapper.toOrder(orderDto);
+        ZonedDateTime utcZonedDateTime = order.getOrderDate().atZone(ZoneOffset.UTC);
+
+        ZoneOffset userZoneOffset = ZoneOffset.ofTotalSeconds(-timezoneOffset * 60);
+        ZonedDateTime userZonedDateTime = utcZonedDateTime.withZoneSameInstant(userZoneOffset);
+
+        LocalDateTime adjustedDateTime = userZonedDateTime.toLocalDateTime();
+
+        order.setOrderDate(adjustedDateTime);
+        order.setUser(userService.getCurrentUser());
         Car car = carRepository.findByVinNumber(orderDto.carDto().vinNumber()).orElse(null);
         if (car != null) {
             order.setCar(car);
@@ -60,11 +72,11 @@ public class OrderService {
             Car savedCar = carRepository.save(carMapper.toCar(orderDto.carDto()));
             order.setCar(savedCar);
         }
-        if(orderDto.works().isEmpty()){
+        if (orderDto.works().isEmpty()) {
             order.setWorks(List.of(workRepository.findByWorkName("Диагностика автомобиля")));
         }
         order.setPrice(order.getWorks().stream().map(Work::getWorkPrice).reduce(BigDecimal.valueOf(0), BigDecimal::add));
-        Order savedOrder =  orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
         String message = "Заказ на обслуживание автомобиля "
                 + savedOrder.getCar().getModel().getMark().getMarkName()
                 + " " + savedOrder.getCar().getModel().getModelName()
@@ -72,7 +84,7 @@ public class OrderService {
         emailService.sendEmailAsync(
                 savedOrder.getUser().getUsername(),
                 "Заказ на обслуживание сформирован",
-                 message);
+                message);
         return orderMapper.toDto(savedOrder);
     }
 
@@ -95,7 +107,7 @@ public class OrderService {
         if (order != null) {
             order.setStatus(status);
             Order updatedOrder = orderRepository.save(order);
-            emailService.sendEmailAsync(updatedOrder.getUser().getUsername(),"Статус заказа изменен", "Статус заказа: " + updatedOrder.getStatus().getDisplayName());
+            emailService.sendEmailAsync(updatedOrder.getUser().getUsername(), "Статус заказа изменен", "Статус заказа: " + updatedOrder.getStatus().getDisplayName());
             return orderMapper.toDto(updatedOrder);
         }
         return null;

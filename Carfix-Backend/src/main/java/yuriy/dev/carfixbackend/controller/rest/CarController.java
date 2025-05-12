@@ -31,12 +31,17 @@ public class CarController {
         return ResponseEntity.ok(new ApiResponseDto<>("OK",cars));
     }
 
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponseDto<CarDto>> findCarById(@PathVariable UUID id) {
-        CarDto car = carService.findCarById(id);
-        return ResponseEntity.ok(new ApiResponseDto<>("OK",car));
+    @GetMapping("/{vin}")
+    public ResponseEntity<ApiResponseDto<CarDto>> findCarByVin(@PathVariable String vin) {
+        CarDto carDto = carService.findCarByVin(vin);
+        return ResponseEntity.ok(new ApiResponseDto<>("OK",carDto));
     }
+
+//    @GetMapping("/{id}")
+//    public ResponseEntity<ApiResponseDto<CarDto>> findCarById(@PathVariable UUID id) {
+//        CarDto car = carService.findCarById(id);
+//        return ResponseEntity.ok(new ApiResponseDto<>("OK",car));
+//    }
 
     @PostMapping
     public ResponseEntity<ApiResponseDto<CarDto>> addCar(@RequestBody CarDto carDto) {

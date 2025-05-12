@@ -27,20 +27,12 @@ export class CarDataForm{
   static create(): FormGroup{
     return new FormGroup({
       vin: new FormControl('',[Validators.minLength(17),Validators.maxLength(17)]),
-      gos: new FormControl('',[Validators.minLength(6),Validators.maxLength(6)]),
+      gov: new FormControl('',[Validators.minLength(6),Validators.maxLength(6)]),
       mark: new FormControl('',Validators.required),
       model: new FormControl('',Validators.required)
     })
   }
 }
 
-export class ServiceDataForm{
-  static create(): FormGroup{
-    return new FormGroup({
-      description: new FormControl(''),
-      works: new FormControl('')
-    })
-  }
-}
 
 

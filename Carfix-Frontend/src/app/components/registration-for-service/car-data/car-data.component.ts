@@ -5,24 +5,26 @@ import {ApiResponse} from '../../../model/ApiResponse';
 import {MarkService} from '../../../services/MarkService/mark.service';
 import {Model} from '../../../model/Model';
 import {NgForOf} from '@angular/common';
-import {FormGroup, FormsModule} from '@angular/forms';
+import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {Car} from '../../../model/Car';
 import {User} from '../../../model/User';
 import {CarDataForm} from '../../../form-groups/data-forms';
+import {CarService} from '../../../services/CarService/car.service';
 
 @Component({
   selector: 'app-car-data',
   standalone: true,
   imports: [
     NgForOf,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   templateUrl: './car-data.component.html',
   styleUrl: './car-data.component.css'
 })
 export class CarDataComponent implements OnInit{
 
-  car: { vinNumber: string; modelDto: Model | null; id: string | null; govNumber: string }  = {
+  car: { vinNumber: string; modelDto: Model | null; id: string | null; govNumber: string } = {
     id: null,
     govNumber: '',
     vinNumber: '',
@@ -31,13 +33,11 @@ export class CarDataComponent implements OnInit{
   marks: Mark[] = [];
 
   carDataForm: FormGroup = CarDataForm.create();
-
   selectedBrand: string | null = null;
-  selectedModel: string | null = null;
 
   models: { value: string; label: string }[] = [];
 
-  constructor(private markService: MarkService) {}
+  constructor(private markService: MarkService, private carService: CarService) {}
 
   ngOnInit() {
     this.markService.getMarks().pipe(
@@ -52,33 +52,87 @@ export class CarDataComponent implements OnInit{
     )
   }
 
-  onBrandChange(brand: string | null){
-    this.selectedBrand = brand;
-    this.models = []; // Очистка предыдущих моделей
+  checkVin() {
+    const vin = this.carDataForm.get('vin')?.value;
+    if (vin && vin.length === 17) {
+      this.carService.getCarByVin(vin).subscribe(response => {
+        const carData = response.data;
+        if (carData) {
+          this.carDataForm.patchValue({
+            gov: carData.govNumber,
+            mark: carData.modelDto?.mark?.markName,
+            model: carData.modelDto?.modelName
+          });
+          const selectedMark = this.marks.find(mark => mark.markName === carData.modelDto.mark.markName);
+          if (selectedMark && selectedMark.models) {
+            this.models = selectedMark.models.map(model => ({
+              value: model.modelName,
+              label: model.modelName
+            }));
+          }
+          this.carDataForm.get('gov')?.disable();
+          this.carDataForm.get('mark')?.disable();
+          this.carDataForm.get('model')?.disable();
+        } else {
+          this.carDataForm.get('gov')?.enable();
+          this.carDataForm.get('mark')?.enable();
+          this.carDataForm.get('model')?.enable();
+        }
+      });
+    }
+  }
 
-    if (brand) {
-      const selectedMark = this.marks.find(mark => mark.markName === brand);
+  onBrandChange(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.selectedBrand = target.value;
+    this.models = [];
+
+    if (this.selectedBrand) {
+      const selectedMark = this.marks.find(mark => mark.markName === this.selectedBrand);
       if (selectedMark && selectedMark.models) {
-        this.models = selectedMark.models.map((model: Model) => ({
+        this.models = selectedMark.models.map(model => ({
           value: model.modelName,
           label: model.modelName
         }));
       }
-    } else {
-      this.models = [
-        { value: '', label: 'Сначала выберите марку...' }
-      ];
+      this.carDataForm.get('model')?.enable();
+    }else{
+      this.carDataForm.get('model')?.disable();
     }
   }
 
-  onModelChange(selectedModel: string | null){
-    this.car.modelDto = this.marks
-      .find(mark => mark.markName === this.selectedBrand)
-      ?.models.find(model => model.modelName === selectedModel) as Model | null;
+  createModelFromForm(): Model {
+    const markName = this.carDataForm.get('mark')?.value;
+    const modelName = this.carDataForm.get('model')?.value;
+
+    if (!markName || !modelName) {
+      throw new Error('Марка или модель не выбраны');
     }
 
-  getCarData(): Car {
+    const mark: Mark = {
+      id: null,
+      markName: markName,
+      models: []
+    };
 
-    return <Car>this.car;
+    const model: Model = {
+      id: null,
+      modelName: modelName,
+      mark: mark
+    };
+
+    return model;
   }
+
+  getCarData(): Car | null {
+    if(this.carDataForm.valid){
+      this.car.vinNumber = this.carDataForm.get('vin')?.value;
+      this.car.govNumber = this.carDataForm.get('gov')?.value;
+      this.car.modelDto = this.createModelFromForm();
+      return <Car>this.car;
+    }
+    return null;
+  }
+
+  protected readonly HTMLSelectElement = HTMLSelectElement;
 }

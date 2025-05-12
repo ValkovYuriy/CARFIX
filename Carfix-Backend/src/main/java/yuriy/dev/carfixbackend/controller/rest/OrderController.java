@@ -39,8 +39,8 @@ public class OrderController {
     }
     
     @PostMapping
-    public ResponseEntity<ApiResponseDto<OrderDto>> addOrder(@RequestBody OrderDto dto){
-        OrderDto addedDto = orderService.addOrder(dto);
+    public ResponseEntity<ApiResponseDto<OrderDto>> addOrder(@RequestBody OrderDto dto,@RequestParam Integer timezoneOffset){
+        OrderDto addedDto = orderService.addOrder(dto,timezoneOffset);
         return ResponseEntity.ok(new ApiResponseDto<>("OK",addedDto));
     }
 

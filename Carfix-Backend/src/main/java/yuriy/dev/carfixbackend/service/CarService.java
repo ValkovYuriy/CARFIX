@@ -51,5 +51,7 @@ public class CarService {
     }
 
 
-
+    public CarDto findCarByVin(String vin) {
+        return carRepository.findByVinNumber(vin).map(carMapper::toCarDto).orElse(null);
+    }
 }

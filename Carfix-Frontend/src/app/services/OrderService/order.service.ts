@@ -26,7 +26,7 @@ export class OrderService {
     return this.httpClient.patch<any>(`${this.baseUrl}/orders/${id}`,`"${status}"`, { headers });
   }
 
-  createOrder(order: Order){
-    return this.httpClient.post<any>(`${this.baseUrl}/orders`,order);
+  createOrder(order: Order,timezoneOffset: number){
+    return this.httpClient.post<any>(`${this.baseUrl}/orders?timezoneOffset=${timezoneOffset}`,order);
   }
 }

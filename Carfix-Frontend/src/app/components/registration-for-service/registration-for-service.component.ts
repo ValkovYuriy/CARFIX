@@ -91,20 +91,30 @@ export class RegistrationForServiceComponent implements OnInit {
 
   done(): void {
     const serviceData = this.serviceData.getServiceData();
-    this.order.orderDate = serviceData.orderDate;
-    this.order.description = serviceData.description;
-    this.order.works = serviceData.works;
-    this.order.price = 0;
-    console.log(this.order);
-    this.orderService.createOrder(this.order).pipe(
-      catchError(err => {
-        console.error("Произошла ошибка при сохранении заявки на обслуживание",err);
-        return of(null);
-      })
-    ).subscribe(response =>{
-      console.log(response);
-      this.router.navigate(['/']);
-    });
+    if(serviceData){
+      this.order.orderDate = serviceData.orderDate;
+      this.order.description = serviceData.description;
+      this.order.works = serviceData.works;
+      this.order.price = 0;
+      console.log(this.order);
+      this.orderService.createOrder(this.order,this.order.orderDate.getTimezoneOffset()).pipe(
+        catchError(err => {
+          console.error("Произошла ошибка при сохранении заявки на обслуживание",err);
+          alert("Произошла ошибка при сохранении заявки на обслуживание");
+          return of(null);
+        })
+      ).subscribe(response =>{
+        if (response) {
+          console.log("Заявка успешно создана:", response);
+          this.router.navigate(['/']);
+        } else {
+          console.warn("Произошла ошибка на сервере");
+        }
+      });
+    }else {
+      console.error('Произошла ошибка при загрузки данных для оформления заказа');
+      alert('Произошла ошибка при загрузки данных для оформления заказа');
+    }
   }
 
   changeContent(): void {
@@ -122,7 +132,12 @@ export class RegistrationForServiceComponent implements OnInit {
         break;
       }
       case 2: {
-        this.order.carDto = this.carData.getCarData();
+        if(this.carData.getCarData() === null){
+          this.current -= 1;
+        }
+        else {
+          this.order.carDto = this.carData.getCarData()!;
+        }
         break;
       }
       default: {

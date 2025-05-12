@@ -1,7 +1,7 @@
 import {Mark} from './Mark';
 
 export interface Model{
-  id: string,
+  id: string | null,
   modelName: string,
   mark: Mark | null
 }

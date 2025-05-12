@@ -29,7 +29,6 @@ import {
 } from '@angular/material/datepicker';
 import {MatIcon, MatIconModule} from '@angular/material/icon';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
-import {ServiceDataForm} from '../../../form-groups/data-forms';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {DateTime} from 'luxon'
@@ -65,8 +64,6 @@ declare global {
 export class ServiceDataComponent implements OnInit {
 
   works: Work[] | null = null;
- // Выбранное время
-  isDisabled: boolean = false; // Флаг для управления состоянием disabled
   selectedWorks: string[] = [];
 
   serviceData: { works: Work[], description: string, orderDate: Date } = {
@@ -159,9 +156,9 @@ export class ServiceDataComponent implements OnInit {
     const serviceElement = document.getElementById('service');
     if (serviceElement) {
       const choices = new Choices(serviceElement, {
-        removeItemButton: true, // Включает кнопку удаления выбранного элемента
-        searchEnabled: true, // Включает поиск
-        placeholder: true, // Включает плейсхолдер
+        removeItemButton: true,
+        searchEnabled: true,
+        placeholder: true,
         placeholderValue: 'Выберете услугу...',
         noResultsText: 'Результаты не найдены',
         itemSelectText: 'Добавить'
@@ -194,14 +191,27 @@ export class ServiceDataComponent implements OnInit {
       })
     ).subscribe(response => {
       this.busyTimes = response.data.map((dateString: string) => new Date(dateString));
-      console.log(this.busyTimes);
     })
   }
 
   getServiceData() {
-    this.serviceData.works = this.getSelectedWorks();
-    this.serviceData.description = this.textarea.nativeElement.value;
-    return this.serviceData;
+    if(this.datetimeForm.valid){
+      const dateValue = this.datetimeForm.get('date')?.value;
+      const timeValue = this.datetimeForm.get('time')?.value;
+      if (dateValue && timeValue) {
+        const hours = timeValue.getHours();
+        const minutes = timeValue.getMinutes();
+        const orderDate = new Date(dateValue);
+        orderDate.setHours(hours, minutes, 0, 0);
+        this.serviceData.orderDate = orderDate;
+        this.serviceData.works = this.getSelectedWorks();
+        this.serviceData.description = this.textarea.nativeElement.value;
+        return this.serviceData;
+      } else {
+        console.error('Дата или время не выбраны.');
+      }
+    }
+    return null;
   }
 
 
@@ -209,26 +219,6 @@ export class ServiceDataComponent implements OnInit {
     return this.works ? this.works.filter(work => this.selectedWorks.includes(work.name)) : [];
   }
 
-  isTimeAllowed(dateTime: Date): boolean {
-    const hours = dateTime.getHours();
-    const minutes = dateTime.getMinutes();
-
-    if (!(hours >= 8 && hours <= 18 && minutes % 30 === 0)) {
-      return false;
-    }
-
-    const isBusy = this.busyTimes.some(busyTime => {
-      return (
-        busyTime.getFullYear() === dateTime.getFullYear() &&
-        busyTime.getMonth() === dateTime.getMonth() &&
-        busyTime.getDate() === dateTime.getDate() &&
-        busyTime.getHours() === dateTime.getHours() &&
-        busyTime.getMinutes() === dateTime.getMinutes()
-      );
-    });
-
-    return !isBusy;
-  }
 
   dateFilter = (date: Date | null): boolean => {
     const day = date?.getDay();
