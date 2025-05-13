@@ -8,6 +8,6 @@ public record WorkDto(
         String name,
         String description,
         BigDecimal workPrice,
-        String imageUrl
+        String imageBase64
 ) {
 }

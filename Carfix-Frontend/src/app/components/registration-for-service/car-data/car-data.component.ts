@@ -1,4 +1,4 @@
-import {Component, model, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Mark} from '../../../model/Mark';
 import {catchError, of} from 'rxjs';
 import {ApiResponse} from '../../../model/ApiResponse';
@@ -7,7 +7,6 @@ import {Model} from '../../../model/Model';
 import {NgForOf} from '@angular/common';
 import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {Car} from '../../../model/Car';
-import {User} from '../../../model/User';
 import {CarDataForm} from '../../../form-groups/data-forms';
 import {CarService} from '../../../services/CarService/car.service';
 
@@ -109,19 +108,9 @@ export class CarDataComponent implements OnInit{
       throw new Error('Марка или модель не выбраны');
     }
 
-    const mark: Mark = {
-      id: null,
-      markName: markName,
-      models: []
-    };
+    const mark = this.marks.find(mark => mark.markName === markName);
 
-    const model: Model = {
-      id: null,
-      modelName: modelName,
-      mark: mark
-    };
-
-    return model;
+    return mark!.models.find((model: Model) => model.modelName === modelName)!;
   }
 
   getCarData(): Car | null {

@@ -3,13 +3,15 @@ package yuriy.dev.carfixbackend.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import yuriy.dev.carfixbackend.dto.PopularWork;
+import yuriy.dev.carfixbackend.dto.PopularWorkDto;
 import yuriy.dev.carfixbackend.dto.WorkDto;
+import yuriy.dev.carfixbackend.mapper.PopularWorkMapper;
 import yuriy.dev.carfixbackend.mapper.WorkMapper;
 import yuriy.dev.carfixbackend.model.Work;
 import yuriy.dev.carfixbackend.model.WorkPrice;
 import yuriy.dev.carfixbackend.repository.WorkPriceRepository;
 import yuriy.dev.carfixbackend.repository.WorkRepository;
+import yuriy.dev.carfixbackend.util.ImageConverter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.UUID;
 public class WorkService {
 
     private final WorkRepository workRepository;
-
+    private final PopularWorkMapper popularWorkMapper;
     private final WorkMapper workMapper;
     private final WorkPriceRepository workPriceRepository;
 
@@ -32,8 +34,11 @@ public class WorkService {
                 .toList();
     }
 
-    public List<PopularWork> findMostPopularWorksOfTheYear(){
-        return workRepository.findMostPopularWorksOfTheYear();
+    public List<PopularWorkDto> findMostPopularWorksOfTheYear(){
+        return workRepository.findMostPopularWorksOfTheYear()
+                .stream()
+                .map(popularWorkMapper::toPopularWorkDto)
+                .toList();
     }
 
     public WorkDto findById(UUID id) {
@@ -52,11 +57,10 @@ public class WorkService {
         return workMapper.toDto(work);
     }
     public WorkDto updateWork(UUID id,WorkDto workDto) {
-        Work work = workRepository.findByIdWithLatestPrice(id).orElse(null);
-        assert work != null;
+        Work work = workRepository.findByIdWithLatestPrice(id).orElseThrow(() -> new RuntimeException("Work not found"));
         work.setName(workDto.name());
         work.setDescription(workDto.description());
-        work.setImageUrl(workDto.imageUrl());
+        work.setImage(ImageConverter.toByteArray(workDto.imageBase64()));
         workPriceRepository.save(WorkPrice.builder()
                         .work(work)
                         .price(workDto.workPrice())

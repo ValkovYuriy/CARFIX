@@ -1,4 +1,4 @@
 export interface PopularWork{
   name: string,
-  imageUrl: string
+  imageBase64: string
 }

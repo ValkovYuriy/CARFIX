@@ -40,7 +40,7 @@ public class Work {
     @Transient
     private BigDecimal workPrice;
 
-    @Column(name = "image_url")
-    private String imageUrl;
+    @Column(name = "image", columnDefinition = "BYTEA")
+    private byte[] image;
 
 }

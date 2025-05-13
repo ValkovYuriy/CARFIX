@@ -4,18 +4,21 @@ import {catchError, of} from 'rxjs';
 import {WorkService} from '../../../services/WorkService/work.service';
 import {BsModalRef, BsModalService} from 'ngx-bootstrap/modal';
 import {WorkDetailsComponent} from './work-details/work-details.component';
+import {NgOptimizedImage} from '@angular/common';
 
 @Component({
   selector: 'app-works',
   standalone: true,
-  imports: [],
+  imports: [
+    NgOptimizedImage
+  ],
   templateUrl: './works.component.html',
   styleUrl: './works.component.css'
 })
 export class WorksComponent implements OnInit{
 
   bsModalRef: BsModalRef | undefined;
-  rowsPerPage = 5;
+  rowsPerPage = 4;
   currentPage = signal(1);
   constructor(protected workService: WorkService,private modalService: BsModalService) {
   }

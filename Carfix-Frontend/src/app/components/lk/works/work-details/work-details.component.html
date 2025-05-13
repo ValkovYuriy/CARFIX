@@ -1,35 +1,53 @@
 <div class="modal-header">
-  @if (isEditMode){
+  @if (isEditMode) {
     <h5 class="modal-title" id="editServiceModalLabel">Редактирование услуги</h5>
-  } @else if (!isEditMode){
+  } @else if (!isEditMode) {
     <h5 class="modal-title" id="addServiceModalLabel">Добавление услуги</h5>
   }
 </div>
-@if(work){
+@if (work) {
   <div class="modal-body">
-    <form [formGroup]="editWork"  id="editServiceForm">
+    <form [formGroup]="editWork" id="editServiceForm">
       <div class="form-group">
         <label for="serviceName">Название услуги</label>
         <input type="text" class="form-control" id="serviceName" formControlName="name" required>
+        @if (editWork.get('name')?.invalid && editWork.get('name')?.touched){
+          <div class="invalid-feedback">
+            Укажите название услуги
+          </div>
+        }
       </div>
       <div class="form-group">
         <label for="serviceDescription">Описание</label>
-        <textarea class="form-control" id="serviceDescription" formControlName="description" rows="3" required></textarea>
+        <textarea class="form-control" id="serviceDescription" formControlName="description" rows="3"
+                  required></textarea>
       </div>
       <div class="form-group">
         <label for="servicePrice">Цена</label>
-        <input type="number" class="form-control" id="servicePrice" formControlName="workPrice" step="1" min="0" required>
+        <input type="number" class="form-control" id="servicePrice" formControlName="workPrice" step="1" min="0"
+               required>
+        @if (editWork.get('workPrice')?.invalid && editWork.get('workPrice')?.touched){
+          <div class="invalid-feedback">
+            Укажите цену услуги
+          </div>
+        }
       </div>
-      <div class="form-group">
-        <label for="serviceImageUrl">URL Адрес картинки</label>
-        <input type="text" class="form-control" id="serviceImageUrl" formControlName="imageUrl" required>
+      <div class="mb-3 d-flex justify-content-center">
+        <p-toast/>
+        <p-fileupload name="demo[]" url="/api/upload.php" (onUpload)="onUpload($event)" [multiple]="false" accept="image/*"
+                      maxFileSize="10000000" mode="advanced" [auto]="true" chooseLabel="Выбрать" showUploadButton="false"
+                      showCancelButton="false">
+          <ng-template #empty>
+            <div>Нажмите на кнопку или перетащите картинку для загрузки</div>
+          </ng-template>
+        </p-fileupload>
       </div>
     </form>
   </div>
-<div class="modal-footer">
-  <button (click)="bsModalRef.hide()" type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-  <button (click)="saveEditedWork(work.id)" type="submit" class="btn btn-primary" >Сохранить изменения</button>
-</div>
+  <div class="modal-footer">
+    <button (click)="bsModalRef.hide()" type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+    <button (click)="saveEditedWork(work.id)" type="submit" class="btn btn-primary">Сохранить изменения</button>
+  </div>
 }
 
 

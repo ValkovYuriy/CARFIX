@@ -10,11 +10,20 @@ import { UserOutline, CarOutline, CheckCircleOutline } from '@ant-design/icons-a
 
 import {MAT_DATE_LOCALE, provideNativeDateAdapter} from '@angular/material/core';
 import {provideAnimations} from '@angular/platform-browser/animations';
+import {providePrimeNG} from 'primeng/config';
+import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
+import Aura from '@primeng/themes/aura'
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'ru-RU' },
-    provideAnimations(),
+    providePrimeNG({
+      theme: {
+        preset: Aura
+      }
+    }),
+    provideAnimationsAsync(),
     provideNativeDateAdapter(),
     provideNzIcons([UserOutline,CarOutline,CheckCircleOutline]),
     provideEnvironmentNgxMask(),

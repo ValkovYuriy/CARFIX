@@ -4,12 +4,20 @@ import {BsModalRef} from 'ngx-bootstrap/modal';
 import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {WorkService} from '../../../../services/WorkService/work.service';
 import {catchError, of} from 'rxjs';
+import {FileUpload, FileUploadEvent, UploadEvent} from 'primeng/fileupload';
+import {Toast} from 'primeng/toast';
+import {NgForOf, NgIf} from '@angular/common';
+import {MessageService} from 'primeng/api';
+import {WorkDataForm} from '../../../../form-groups/data-forms';
 
 @Component({
   selector: 'app-work-details',
   standalone: true,
+  providers: [MessageService],
   imports: [
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FileUpload,
+    Toast
   ],
   templateUrl: './work-details.component.html',
   styleUrl: './work-details.component.css'
@@ -19,14 +27,9 @@ export class WorkDetailsComponent implements OnInit{
   @Input() work: Work | undefined;
 
   isEditMode: boolean = false;
-  editWork: FormGroup = new FormGroup({
-    name: new FormControl(),
-    description: new FormControl(),
-    workPrice: new FormControl(),
-    imageUrl: new FormControl(),
-  });
+  editWork: FormGroup = WorkDataForm.create();
 
-  constructor(public bsModalRef: BsModalRef, private workService:WorkService) {
+  constructor(public bsModalRef: BsModalRef, private workService:WorkService,private messageService: MessageService) {
   }
 
   ngOnInit() {
@@ -34,8 +37,7 @@ export class WorkDetailsComponent implements OnInit{
       {
         name: this.work?.name,
         description: this.work?.description,
-        workPrice: this.work?.workPrice,
-        imageUrl: this.work?.imageUrl
+        workPrice: this.work?.workPrice
       },
     );
     this.isEditMode = !!this.work?.id;
@@ -43,38 +45,58 @@ export class WorkDetailsComponent implements OnInit{
 
   saveEditedWork(id: string) {
     if (this.isEditMode){
-      this.workService.updateWork(id,this.editWork.value).pipe(
-        catchError(err => {
-          console.error('Произошла ошибка при обновлении услуги',err);
-          alert('Произошла ошибка при обновлении услуги')
-          return of(null);
+      if (this.editWork.valid && this.work?.imageBase64) {
+        this.work.workPrice = this.editWork.get('workPrice')?.value;
+        this.work.name = this.editWork.get('name')?.value;
+        this.work.description = this.editWork.get('description')?.value;
+        this.workService.updateWork(id, this.work).pipe(
+          catchError(err => {
+            console.error('Произошла ошибка при обновлении услуги', err);
+            alert('Произошла ошибка при обновлении услуги')
+            return of(null);
+          })
+        ).subscribe(response => {
+          if (response) {
+            this.bsModalRef.hide();
+            this.workService.updateWorkInSignal(this.work!);
+          }
         })
-      ).subscribe(response =>{
-        this.bsModalRef.hide();
-        this.work!.name = this.editWork.get('name')?.value;
-        this.work!.description = this.editWork.get('description')?.value;
-        this.work!.workPrice = this.editWork.get('workPrice')?.value;
-        this.work!.imageUrl = this.editWork.get('imageUrl')?.value;
-        this.workService.updateWorkInSignal(this.work!);
-      })
+      }
     }else{
-      this.workService.createWork(this.editWork.value).pipe(
-        catchError(err => {
-          console.error('Произошла ошибка при добавлении услуги',err);
-          alert('Произошла ошибка при добавлении услуги');
-          return of(null);
+      if (this.editWork.valid && this.work?.imageBase64) {
+        this.work.workPrice = this.editWork.get('workPrice')?.value;
+        this.work.name = this.editWork.get('name')?.value;
+        this.work.description = this.editWork.get('description')?.value;
+        this.workService.createWork(this.work).pipe(
+          catchError(err => {
+            console.error('Произошла ошибка при добавлении услуги', err);
+            alert('Произошла ошибка при добавлении услуги');
+            return of(null);
+          })
+        ).subscribe(response => {
+          if(response){
+            this.bsModalRef.hide();
+            this.workService.addWorkToSignal(this.work!);
+          }
         })
-      ).subscribe(response =>{
-        this.bsModalRef.hide();
-        this.work!.name = this.editWork.get('name')?.value;
-        this.work!.description = this.editWork.get('description')?.value;
-        this.work!.workPrice = this.editWork.get('workPrice')?.value;
-        this.work!.imageUrl = this.editWork.get('imageUrl')?.value;
-        this.workService.addWorkToSignal(this.work!);
-      })
+      }
     }
 
   }
 
-
+  onUpload(event: FileUploadEvent) {
+    // for(let file of event.files) {
+    //   this.uploadedFiles.push(file);
+    // }
+    // this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
+    const file = event.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        this.work!.imageBase64 = base64String.split(',')[1];
+      };
+      reader.readAsDataURL(file);
+    }
+  }
 }

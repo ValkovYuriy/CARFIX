@@ -12,7 +12,7 @@ export function showServiceDetails(service) {
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <img src="${service.imageUrl}" alt="${service.name}" class="img-fluid mb-3">
+                            <img src="data:image/jpeg;base64,${service.imageBase64}" alt="${service.name}" class="img-fluid mb-3">
                             <p><strong>Описание:</strong> ${service.description || 'Описание отсутствует'}</p>
                             <p><strong>Стоимость:</strong> ${service.workPrice} руб.</p>
                             <p><strong>Дополнительная информация:</strong> ${service.details || 'Нет дополнительной информации'}</p>
@@ -32,7 +32,6 @@ export function showServiceDetails(service) {
     const modal = new Modal(document.getElementById('serviceModal'));
     modal.show();
 
-    // Удаляем модальное окно из DOM после закрытия
     document.getElementById('serviceModal').addEventListener('hidden.bs.modal', () => {
       document.getElementById('serviceModal').remove();
     });

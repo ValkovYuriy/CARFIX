@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import yuriy.dev.carfixbackend.dto.PopularWork;
+import yuriy.dev.carfixbackend.dto.PopularWorkDto;
 import yuriy.dev.carfixbackend.dto.WorkDto;
 import yuriy.dev.carfixbackend.dto.response.ApiResponseDto;
 import yuriy.dev.carfixbackend.service.WorkService;
@@ -32,7 +32,7 @@ public class WorkController {
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<ApiResponseDto<List<PopularWork>>> findPopularWorks() {
+    public ResponseEntity<ApiResponseDto<List<PopularWorkDto>>> findPopularWorks() {
         return ResponseEntity.ok(new ApiResponseDto<>("OK",workService.findMostPopularWorksOfTheYear()));
     }
 
@@ -41,6 +41,19 @@ public class WorkController {
         WorkDto work = workService.findById(id);
         return ResponseEntity.ok(new ApiResponseDto<>("OK", work));
     }
+
+//    @GetMapping("/{id}/image")
+//    public ResponseEntity<byte[]> getImage(@PathVariable UUID id) {
+//        WorkDto workDto = workService.findById(id);
+//
+//        byte[] imageBytes = workDto.imageBase64();
+//        if (imageBytes == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.IMAGE_JPEG);
+//        return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+//    }
 
     @PostMapping
     public ResponseEntity<ApiResponseDto<WorkDto>> createWork(@RequestBody WorkDto work) {

@@ -34,5 +34,15 @@ export class CarDataForm{
   }
 }
 
+export class WorkDataForm{
+  static create(): FormGroup{
+    return new FormGroup({
+      name: new FormControl('',[Validators.required,Validators.minLength(2)]),
+      description: new FormControl(''),
+      workPrice: new FormControl('',Validators.required)
+    })
+  }
+}
+
 
 

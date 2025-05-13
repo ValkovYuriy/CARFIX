@@ -1,5 +1,4 @@
 <div id="works" >
-  <div class="container mt-4">
 
     <div class="d-flex">
       <h2 >Список услуг</h2>
@@ -8,7 +7,6 @@
         Добавить услугу</i>
       </div>
     </div>
-    <!-- Элементы управления пагинацией -->
     <div class="pagination-controls mb-3">
       <button class="btn custom-btn" (click)="prevPage()" [disabled]="currentPage() === 1">
         ← Предыдущая
@@ -21,14 +19,13 @@
       </button>
     </div>
 
-    <!-- Таблица -->
     <table class="table table-bordered">
       <thead class="thead-dark">
-      <tr>
-        <th>Услуга</th>
+      <tr style="text-align: center;">
+        <th >Услуга</th>
         <th>Описание</th>
         <th>Цена</th>
-        <th>URL Адрес картинки</th>
+        <th>Картинка</th>
         <th>Действия</th>
       </tr>
       </thead>
@@ -38,7 +35,17 @@
             <td>{{ work.name }}</td>
             <td>{{ work.description }}</td>
             <td>{{ work.workPrice }} ₽</td>
-            <td>{{ work.imageUrl }}</td>
+            <td style="width: 180px; height: 120px; text-align: center; vertical-align: middle;">
+              @if(work.imageBase64) {
+                <img
+                  [src]="'data:image/jpeg;base64,' + work.imageBase64"
+                  alt="{{ work.name }}"
+                  style="max-width: 100%; max-height: 100%; object-fit: contain;"
+                />
+              } @else {
+                <span>Нет изображения</span>
+              }
+            </td>
             <td>
               <i class="fas fa-edit action-icon action-edit" (click)="showWorkDetails(work,true)"> Изменить</i>
               <i class="fas fa-trash action-icon action-delete" (click)="deleteWork(work.id)"> Удалить</i>
@@ -47,5 +54,4 @@
         }
       </tbody>
     </table>
-  </div>
 </div>

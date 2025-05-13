@@ -1,10 +1,8 @@
 
-import Big from 'big.js';
-
 export interface Work{
-  id: string; // UUID
-  name: string; // String
-  description: string; // String
-  imageUrl: string; // String
-  workPrice: number; // Вложенный объект WorkPriceDto
+  id: string;
+  name: string;
+  description: string;
+  workPrice: number;
+  imageBase64: string | null
 }

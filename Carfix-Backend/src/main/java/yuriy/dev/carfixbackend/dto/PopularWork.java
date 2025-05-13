@@ -16,7 +16,7 @@ public class PopularWork {
 
     private String name;
 
-    private String imageUrl;
+    private byte[] image;
 
     private Long count;
 }
