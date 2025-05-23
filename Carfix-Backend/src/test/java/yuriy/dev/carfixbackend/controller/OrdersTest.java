@@ -74,15 +74,12 @@ public class OrdersTest {
 
     @Test
     public void testAddOrder_WithNewCar() throws Exception {
-
         UserDto userDto =  userMapper.toDto(userService.getByUsername("mail2@mail.ru"));
         ModelDto modelDto = modelService.findModelById(UUID.fromString("173cb097-680a-44c3-933e-1c8813fc16a3"));
         List<WorkDto> workDtos = List.of(
                 workService.findById(UUID.fromString("09d4c1d4-d39e-40d3-b70f-81d2178a7f0e")),
                 workService.findById(UUID.fromString("bbeec102-9d76-42cd-a248-ea82ccaed16a"))
         );
-
-
         OrderDto requestDto = new OrderDto(
                 null,
                 new CarDto(null, "ABC123", "1HGCM82633A123410",modelDto),
@@ -93,10 +90,7 @@ public class OrdersTest {
                 "Test order description",
                 workDtos
         );
-
         String requestJson = objectMapper.writeValueAsString(requestDto);
-
-
         MvcResult result = mockMvc.perform(post("/api/orders")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestJson)
@@ -105,22 +99,18 @@ public class OrdersTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
-
         String responseJson = result.getResponse().getContentAsString();
         ApiResponseDto<OrderDto> response = objectMapper.readValue(
                 responseJson,
                 new TypeReference<>() {});
 
         assertThat(response.getMessage()).isEqualTo("OK");
-
         Order savedOrder = orderRepository.findById(response.getData().id())
                 .orElseThrow();
-
         assertThat(savedOrder.getCar().getVinNumber()).isEqualTo("1HGCM82633A123410");
         assertThat(savedOrder.getPrice()).isEqualTo(BigDecimal.valueOf(3200));
         assertThat(savedOrder.getDescription()).isEqualTo("Test order description");
         assertThat(savedOrder.getWorks()).hasSize(2);
-
         Car savedCar = carRepository.findByVinNumber("1HGCM82633A123410").orElseThrow();
         assertThat(savedCar.getVinNumber()).isEqualTo("1HGCM82633A123410");
         assertThat(savedCar.getId()).isNotNull();
@@ -130,7 +120,6 @@ public class OrdersTest {
 
     @Test
     public void testAddOrder_WithExistingCar() throws Exception {
-
         CarDto carDto = carService.findCarById(UUID.fromString("cc0a84db-04f4-43cf-9e7b-17db5ddfc1b8"));
         UserDto userDto =  userMapper.toDto(userService.getByUsername("mail2@mail.ru"));
         List<WorkDto> workDtos = List.of(
@@ -146,24 +135,20 @@ public class OrdersTest {
                 Status.ACCEPTED,
                 "Order with existing car",
                 workDtos);
-
         MvcResult result = mockMvc.perform(post("/api/orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andReturn();
-
         String responseJson = result.getResponse().getContentAsString();
         ApiResponseDto<OrderDto> response = objectMapper.readValue(
                 responseJson,
                 new TypeReference<>() {});
 
         assertThat(response.getMessage()).isEqualTo("OK");
-
         Order savedOrder = orderRepository.findById(response.getData().id())
                 .orElseThrow();
-
         assertThat(savedOrder.getCar().getVinNumber()).isEqualTo("1HGCM82633A123456");
         assertThat(savedOrder.getDescription()).isEqualTo("Order with existing car");
         assertThat(savedOrder.getPrice()).isEqualTo(BigDecimal.valueOf(3200));

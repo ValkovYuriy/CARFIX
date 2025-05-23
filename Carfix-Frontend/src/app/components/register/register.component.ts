@@ -42,7 +42,8 @@ export class RegisterComponent implements OnInit{
       confirmPassword: new FormControl('',[Validators.required,this.passwordMatchValidator()]),
       phoneNumber: new FormControl('',[Validators.pattern(/^\+?[0-9]{10,15}$/)]),
       firstName: new FormControl('',[Validators.minLength(2),Validators.maxLength(100)]),
-      lastName: new FormControl('',[Validators.minLength(2),Validators.maxLength(100)])
+      lastName: new FormControl('',[Validators.minLength(2),Validators.maxLength(100)]),
+      agreeToTerms: new FormControl(false,Validators.requiredTrue)
     }
   );
 
@@ -71,7 +72,10 @@ export class RegisterComponent implements OnInit{
   }
 
   register(){
-    if(this.signUp.valid){
+    if(!this.signUp.get('agreeToTerms')?.value){
+      this.errorMessage = 'Пожалуйста подтвердите согласие на обработку персональных данных'
+    }
+    else if(this.signUp.valid){
       this.authenticationService.register(
         this.signUp.get('email')?.value,
         this.signUp.get('password')?.value,
@@ -88,6 +92,9 @@ export class RegisterComponent implements OnInit{
         localStorage.setItem("token",response.token);
         this.router.navigate(['/']);
       });
+    }
+    else {
+      this.errorMessage = 'Заполните все необходимые поля'
     }
   }
 

@@ -55,11 +55,8 @@ public class AuthenticationTest {
 
         String responseJson = result.getResponse().getContentAsString();
         String token = JsonPath.parse(responseJson).read("$.token", String.class);
-
         UserDetails userDetails = userDetailsService.loadUserByUsername("test@user.ru");
-
         assertThat(jwtUtil.isTokenValid(token, userDetails)).isTrue();
-
         assertThat(jwtUtil.extractUserName(token)).isEqualTo("test@user.ru");
     }
 

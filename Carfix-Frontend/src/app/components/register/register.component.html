@@ -70,7 +70,7 @@
                     }
                   </div>
 
-                  <div data-mdb-input-init class="form-outline mb-4">
+                  <div data-mdb-input-init class="form-outline mb-3">
                     <label class="form-label" for="phone-number">Номер телефона</label>
                     <input [ngClass]="{ 'is-invalid': signUp.get('phoneNumber')?.invalid && signUp.get('phoneNumber')?.touched }" formControlName="phoneNumber" id="phone-number" mask="(000) 000-00-00" prefix="+7" [showMaskTyped]="true" type="text" name="phoneNumber" class="form-control form-control-lg"/>
                     <div class="invalid-feedback">
@@ -102,6 +102,12 @@
                         </div>
                       }
                     }
+                  </div>
+                  <div data-mdb-input-init class="form-outline mb-2">
+                    <label>
+                      <input type="checkbox" formControlName="agreeToTerms" style="cursor: pointer"/> Я согласен на обработку моих <a routerLink="/privacy-policy" target="_blank">персональных
+                      данных</a>
+                    </label>
                   </div>
                   @if(errorMessage){
                     <div class="alert alert-danger mt-3">

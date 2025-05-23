@@ -63,5 +63,17 @@
         </form>
       </div>
     </div>
+  <div class="mb-3" >
+    <label>
+      <input type="checkbox" [formControl]="agreeToTerms" style="cursor: pointer"/> Я согласен на обработку моих <a
+      routerLink="/privacy-policy" target="_blank">персональных
+      данных</a>
+    </label>
+  </div>
+  @if(errorMessage){
+    <div class="alert alert-danger mt-3">
+      {{errorMessage}}
+    </div>
+  }
 </div>
 

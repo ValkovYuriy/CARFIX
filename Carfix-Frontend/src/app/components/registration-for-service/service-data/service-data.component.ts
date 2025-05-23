@@ -34,6 +34,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {DateTime} from 'luxon'
 import {OrderService} from '../../../services/OrderService/order.service';
 import {NgxMatDatepickerInput, NgxMatDatepickerInputEvent, NgxMatDatetimepicker} from '@ngxmc/datetime-picker';
+import {RouterLink} from "@angular/router";
 declare global {
   interface Window {
     webkitSpeechRecognition: any;
@@ -43,21 +44,22 @@ declare global {
 @Component({
   selector: 'app-service-data',
   standalone: true,
-  imports: [
-    FormsModule,
-    NgIf,
-    NgOptimizedImage,
-    MatDatepickerModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatNativeDateModule,
-    ReactiveFormsModule,
-    NgxMaterialTimepickerModule,
-    MatTimepickerInput,
-    MatTimepicker,
-    MatTimepickerToggle
-  ],
+    imports: [
+        FormsModule,
+        NgIf,
+        NgOptimizedImage,
+        MatDatepickerModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatNativeDateModule,
+        ReactiveFormsModule,
+        NgxMaterialTimepickerModule,
+        MatTimepickerInput,
+        MatTimepicker,
+        MatTimepickerToggle,
+        RouterLink
+    ],
   templateUrl: './service-data.component.html',
   styleUrl: './service-data.component.css'
 })
@@ -65,6 +67,8 @@ export class ServiceDataComponent implements OnInit {
 
   works: Work[] | null = null;
   selectedWorks: string[] = [];
+  errorMessage: string | null = null;
+  agreeToTerms: FormControl = new FormControl(false,Validators.requiredTrue);
 
   serviceData: { works: Work[], description: string, orderDate: Date } = {
     works: [],
@@ -195,7 +199,10 @@ export class ServiceDataComponent implements OnInit {
   }
 
   getServiceData() {
-    if(this.datetimeForm.valid){
+    if(!this.agreeToTerms.value){
+      this.errorMessage = 'Пожалуйста подтвердите согласие на обработку персональных данных'
+    }
+    else if(this.datetimeForm.valid){
       const dateValue = this.datetimeForm.get('date')?.value;
       const timeValue = this.datetimeForm.get('time')?.value;
       if (dateValue && timeValue) {
