@@ -14,7 +14,7 @@ import yuriy.dev.carfixbackend.dto.response.JwtAuthenticationResponse;
 
 
 @Controller
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 

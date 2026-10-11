@@ -1,5 +1,5 @@
-#server:
-#  port: 8888
+server:
+  port: 8080
 
 management:
   metrics:
@@ -16,8 +16,6 @@ management:
     metrics:
       export:
         enabled: true
-
-
 
 spring:
   application:

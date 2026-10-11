@@ -13,7 +13,7 @@ export class AuthenticationService {
 
   private decodedToken: any = null;
 
-  private baseUrl = `${environment.baseUrl}`;
+  private baseUrl = `${environment.baseUrl}/api`;
 
   private jwtHelper: JwtHelperService;
 
@@ -77,7 +77,7 @@ export class AuthenticationService {
   }
 
   private redirectToLogin(): void {
-    this.router.navigate(['/login']); // Измените на путь вашей страницы логина
+    this.router.navigate(['/login']);
   }
 
 }
