@@ -1,40 +1,30 @@
-import {ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import Choices from 'choices.js';
 import {Work} from '../../../model/Work';
 import {WorkService} from '../../../services/WorkService/work.service';
 import {catchError, of} from 'rxjs';
-import {ApiResponse} from '../../../model/ApiResponse';
 import {
   AbstractControl,
   FormControl,
   FormGroup,
   FormsModule,
-  ReactiveFormsModule, ValidationErrors,
+  ReactiveFormsModule,
+  ValidationErrors,
   ValidatorFn,
   Validators
 } from '@angular/forms';
 import {NgIf, NgOptimizedImage} from '@angular/common';
-import {
-  MatTimepicker,
-  MatTimepickerInput,
-  MatTimepickerModule,
-  MatTimepickerToggle
-} from '@angular/material/timepicker';
-import {MatFormField, MatHint, MatInput, MatInputModule, MatLabel} from '@angular/material/input';
-import {
-  MatDatepicker,
-  MatDatepickerInput, MatDatepickerInputEvent,
-  MatDatepickerModule,
-  MatDatepickerToggle
-} from '@angular/material/datepicker';
-import {MatIcon, MatIconModule} from '@angular/material/icon';
+import {MatTimepicker, MatTimepickerInput, MatTimepickerToggle} from '@angular/material/timepicker';
+import {MatInputModule} from '@angular/material/input';
+import {MatDatepickerInputEvent, MatDatepickerModule} from '@angular/material/datepicker';
+import {MatIconModule} from '@angular/material/icon';
 import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {DateTime} from 'luxon'
 import {OrderService} from '../../../services/OrderService/order.service';
-import {NgxMatDatepickerInput, NgxMatDatepickerInputEvent, NgxMatDatetimepicker} from '@ngxmc/datetime-picker';
+import {NgxMatDatetimepicker} from '@ngxmc/datetime-picker';
 import {RouterLink} from "@angular/router";
+
 declare global {
   interface Window {
     webkitSpeechRecognition: any;
@@ -221,11 +211,12 @@ export class ServiceDataComponent implements OnInit {
     return null;
   }
 
-
   getSelectedWorks(): Work[] {
-    return this.works ? this.works.filter(work => this.selectedWorks.includes(work.name)) : [];
+    const result = this.works
+      ? this.works.filter(work => this.selectedWorks.includes(work.name))
+      : [];
+    return result.map(work => ({ ...work, imageBase64: null }));
   }
-
 
   dateFilter = (date: Date | null): boolean => {
     const day = date?.getDay();
