@@ -52,8 +52,8 @@ public class SecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.POST, "/api/orders").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.POST,"/api/works", "/api/work-prices","/api/marks","/api/models").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/orders/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT,"/api/works").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE,"/api/works").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"/api/works/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/api/works/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .logout((logout) -> logout
@@ -88,7 +88,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("*"));
+        corsConfiguration.addAllowedOriginPattern("*");
         corsConfiguration.setAllowedMethods(List.of("*"));
         corsConfiguration.setAllowedHeaders(List.of("*"));
         corsConfiguration.setAllowCredentials(true);

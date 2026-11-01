@@ -1,23 +1,19 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, NO_ERRORS_SCHEMA, OnInit} from '@angular/core';
 import {Work} from '../../../../model/Work';
 import {BsModalRef} from 'ngx-bootstrap/modal';
-import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {WorkService} from '../../../../services/WorkService/work.service';
 import {catchError, of} from 'rxjs';
-import {FileUpload, FileUploadEvent, UploadEvent} from 'primeng/fileupload';
-import {Toast} from 'primeng/toast';
-import {NgForOf, NgIf} from '@angular/common';
 import {MessageService} from 'primeng/api';
 import {WorkDataForm} from '../../../../form-groups/data-forms';
 
 @Component({
   selector: 'app-work-details',
+  schemas: [NO_ERRORS_SCHEMA],
   standalone: true,
   providers: [MessageService],
   imports: [
-    ReactiveFormsModule,
-    FileUpload,
-    Toast
+    ReactiveFormsModule
   ],
   templateUrl: './work-details.component.html',
   styleUrl: './work-details.component.css'
@@ -29,7 +25,7 @@ export class WorkDetailsComponent implements OnInit{
   isEditMode: boolean = false;
   editWork: FormGroup = WorkDataForm.create();
 
-  constructor(public bsModalRef: BsModalRef, private workService:WorkService,private messageService: MessageService) {
+  constructor(public bsModalRef: BsModalRef, private workService:WorkService, private messageService: MessageService) {
   }
 
   ngOnInit() {
@@ -84,19 +80,63 @@ export class WorkDetailsComponent implements OnInit{
 
   }
 
-  onUpload(event: FileUploadEvent) {
-    // for(let file of event.files) {
-    //   this.uploadedFiles.push(file);
-    // }
-    // this.messageService.add({severity: 'info', summary: 'File Uploaded', detail: ''});
-    const file = event.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64String = reader.result as string;
-        this.work!.imageBase64 = base64String.split(',')[1];
-      };
-      reader.readAsDataURL(file);
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    this.readFile(file);
+  }
+
+  private readFile(file: File) {
+    if (!this.work) return;
+
+    // простая валидация
+    if (!file.type.startsWith('image/')) {
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: 'Выберите изображение' });
+      return;
     }
+    if (file.size > 10 * 1024 * 1024) {
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: 'Файл больше 10 МБ' });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.work!.imageBase64 = (reader.result as string).split(',')[1];
+    };
+    reader.onerror = () => {
+      this.messageService.add({ severity: 'error', summary: 'Ошибка', detail: 'Не удалось прочитать файл' });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  clearImage() {
+    if (this.work) {
+      this.work.imageBase64 = '';
+    }
+  }
+
+  isDragging = false;
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = true;
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = false;
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = false;
+
+    const file = event.dataTransfer?.files?.[0];
+    if (file) this.readFile(file);
   }
 }

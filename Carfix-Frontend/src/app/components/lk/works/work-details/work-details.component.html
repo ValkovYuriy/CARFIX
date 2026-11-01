@@ -33,14 +33,36 @@
         }
       </div>
       <div class="mb-3 d-flex justify-content-center">
-        <p-toast/>
-        <p-fileupload name="demo[]" url="/api/upload.php" (onUpload)="onUpload($event)" [multiple]="false" accept="image/*"
-                      maxFileSize="10000000" mode="advanced" [auto]="true" chooseLabel="Выбрать" showUploadButton="false"
-                      showCancelButton="false">
-          <ng-template #empty>
-            <div>Нажмите на кнопку или перетащите картинку для загрузки</div>
-          </ng-template>
-        </p-fileupload>
+        <div class="form-group">
+          <label>Картинка</label>
+          <div
+            class="drop-zone"
+            [class.drop-zone--active]="isDragging"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+            (click)="fileInput.click()">
+
+            <span>Перетащите картинку сюда или нажмите, чтобы выбрать</span>
+
+            <input
+              #fileInput
+              type="file"
+              accept="image/*"
+              hidden
+              (change)="onFileSelected($event)">
+          </div>
+
+          @if (work.imageBase64) {
+          <div class="mt-2">
+            <img [src]="'data:image/*;base64,' + work!.imageBase64"
+                 alt="Предпросмотр"
+                 style="max-width: 200px; max-height: 200px; border: 1px solid #ddd; border-radius: 4px;">
+            <button type="button" class="btn btn-sm btn-outline-danger mt-1"
+                    (click)="clearImage()">Удалить</button>
+          </div>
+          }
+        </div>
       </div>
     </form>
   </div>

@@ -56,17 +56,20 @@ public class WorkService {
                 .build());
         return workMapper.toDto(work);
     }
+
     public WorkDto updateWork(UUID id,WorkDto workDto) {
         Work work = workRepository.findByIdWithLatestPrice(id).orElseThrow(() -> new RuntimeException("Work not found"));
         work.setName(workDto.name());
         work.setDescription(workDto.description());
+        work.setWorkPrice(workDto.workPrice());
         work.setImage(ImageConverter.toByteArray(workDto.imageBase64()));
         workPriceRepository.save(WorkPrice.builder()
                         .work(work)
                         .price(workDto.workPrice())
                         .date(LocalDateTime.now())
                 .build());
-        return workMapper.toDto(workRepository.save(work));
+        workRepository.save(work);
+        return workMapper.toDto(work);
     }
 
 
