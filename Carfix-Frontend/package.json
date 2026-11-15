@@ -7,7 +7,9 @@
     "start:dev": "ng serve --configuration=development --proxy-config proxy.conf.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "start:e2e": "ng serve --port 4200 --proxy-config proxy.e2e.json",
+    "test:e2e": "playwright test"
   },
   "private": true,
   "dependencies": {
@@ -48,6 +50,7 @@
     "@angular-devkit/build-angular": "^19.2.5",
     "@angular/cli": "^19.2.5",
     "@angular/compiler-cli": "^19.2.0",
+    "@playwright/test": "^1.65.1",
     "@types/big.js": "^6.2.2",
     "@types/jasmine": "~5.1.0",
     "@types/jquery": "^3.5.32",

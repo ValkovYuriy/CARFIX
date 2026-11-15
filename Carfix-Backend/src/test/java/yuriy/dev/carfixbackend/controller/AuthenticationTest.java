@@ -1,40 +1,48 @@
 package yuriy.dev.carfixbackend.controller;
 
-import com.jayway.jsonpath.JsonPath;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
+import yuriy.dev.carfixbackend.auth.AuthenticationService;
+import yuriy.dev.carfixbackend.controller.rest.AuthenticationController;
+import yuriy.dev.carfixbackend.dto.response.JwtAuthenticationResponse;
+import yuriy.dev.carfixbackend.service.CustomUserDetailService;
 import yuriy.dev.carfixbackend.token.JwtUtil;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Transactional
-public class AuthenticationTest {
+/**
+ * Тесты REST-контроллера аутентификации.
+ * Слой сервисов и БД замоканы — тесты изолированы и не зависят от окружения.
+ */
+@WebMvcTest(AuthenticationController.class)
+class AuthenticationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    @MockitoBean
+    private AuthenticationService authenticationService;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    // Зависимости конфигурации безопасности (SecurityConfig / JwtRequestFilter)
+    @MockitoBean
+    private JwtUtil jwtUtil;
+    @MockitoBean
+    private CustomUserDetailService customUserDetailService;
 
     @Test
-    public void testRegisterUser_ReturnsValidJwtToken() throws Exception {
+    void register_validData_returnsJwtToken() throws Exception {
+        when(authenticationService.signUpJwt(any()))
+                .thenReturn(new JwtAuthenticationResponse("test-jwt-token"));
+
         String requestBody = """
                 {
                     "username": "test@user.ru",
@@ -45,34 +53,75 @@ public class AuthenticationTest {
                 }
                 """;
 
-        MvcResult result = mockMvc.perform(post("/auth/register")
+        mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").exists())
-                .andReturn();
-
-        String responseJson = result.getResponse().getContentAsString();
-        String token = JsonPath.parse(responseJson).read("$.token", String.class);
-        UserDetails userDetails = userDetailsService.loadUserByUsername("test@user.ru");
-        assertThat(jwtUtil.isTokenValid(token, userDetails)).isTrue();
-        assertThat(jwtUtil.extractUserName(token)).isEqualTo("test@user.ru");
+                .andExpect(jsonPath("$.token").value("test-jwt-token"));
     }
 
     @Test
-    public void testRegisterUser_InvalidData() throws Exception {
-        mockMvc.perform(post("/auth/register")
+    void register_invalidData_returnsBadRequest() throws Exception {
+        mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                    {
-                       
-                        "password": "pass",
-                        "firstName": "",
-                        "lastName": "",
-                        "phoneNumber": "123"
-                    }
-                    """))
+                                {
+                                    "password": "pass",
+                                    "firstName": "",
+                                    "lastName": "",
+                                    "phoneNumber": "123"
+                                }
+                                """))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void register_invalidEmail_returnsBadRequest() throws Exception {
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "username": "not-an-email",
+                                    "password": "password123",
+                                    "firstName": "John",
+                                    "lastName": "Doe",
+                                    "phoneNumber": "+79991234567"
+                                }
+                                """))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void login_validCredentials_returnsJwtToken() throws Exception {
+        when(authenticationService.signInJwt(any()))
+                .thenReturn(new JwtAuthenticationResponse("login-jwt-token"));
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "username": "test@user.ru",
+                                    "password": "password123"
+                                }
+                                """))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").value("login-jwt-token"));
+    }
+
+    @Test
+    void login_blankPassword_returnsBadRequest() throws Exception {
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "username": "test@user.ru",
+                                    "password": ""
+                                }
+                                """))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }

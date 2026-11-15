@@ -1,49 +1,50 @@
 package yuriy.dev.carfixbackend.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
+import yuriy.dev.carfixbackend.auth.Role;
+import yuriy.dev.carfixbackend.controller.rest.OrderController;
 import yuriy.dev.carfixbackend.dto.CarDto;
 import yuriy.dev.carfixbackend.dto.ModelDto;
 import yuriy.dev.carfixbackend.dto.OrderDto;
 import yuriy.dev.carfixbackend.dto.UserDto;
 import yuriy.dev.carfixbackend.dto.WorkDto;
 import yuriy.dev.carfixbackend.dto.enums.Status;
-import yuriy.dev.carfixbackend.dto.response.ApiResponseDto;
-import yuriy.dev.carfixbackend.mapper.UserMapper;
-import yuriy.dev.carfixbackend.model.Car;
-import yuriy.dev.carfixbackend.model.Order;
-import yuriy.dev.carfixbackend.repository.CarRepository;
-import yuriy.dev.carfixbackend.repository.OrderRepository;
-import yuriy.dev.carfixbackend.service.CarService;
-import yuriy.dev.carfixbackend.service.ModelService;
-import yuriy.dev.carfixbackend.service.UserService;
-import yuriy.dev.carfixbackend.service.WorkService;
+import yuriy.dev.carfixbackend.model.Mark;
+import yuriy.dev.carfixbackend.service.CustomUserDetailService;
+import yuriy.dev.carfixbackend.service.OrderService;
+import yuriy.dev.carfixbackend.token.JwtUtil;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Transactional
-@WithMockUser(username = "mail2@mail.ru", authorities = {"ROLE_USER"})
-public class OrdersTest {
+/**
+ * Тесты REST-контроллера заказов.
+ * Сервисный слой и БД замоканы — тесты изолированы и не зависят от окружения.
+ * Бизнес-логика создания заказа покрыта юнит-тестами {@link yuriy.dev.carfixbackend.service.OrderServiceTest}.
+ */
+@WebMvcTest(OrderController.class)
+class OrdersTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -51,108 +52,100 @@ public class OrdersTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private OrderRepository orderRepository;
+    @MockitoBean
+    private OrderService orderService;
 
-    @Autowired
-    private CarRepository carRepository;
+    // Зависимости конфигурации безопасности (SecurityConfig / JwtRequestFilter)
+    @MockitoBean
+    private JwtUtil jwtUtil;
+    @MockitoBean
+    private CustomUserDetailService customUserDetailService;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private CarService carService;
-
-    @Autowired
-    private ModelService modelService;
-
-    @Autowired
-    private WorkService workService;
-
-    @Test
-    public void testAddOrder_WithNewCar() throws Exception {
-        UserDto userDto =  userMapper.toDto(userService.getByUsername("mail2@mail.ru"));
-        ModelDto modelDto = modelService.findModelById(UUID.fromString("173cb097-680a-44c3-933e-1c8813fc16a3"));
-        List<WorkDto> workDtos = List.of(
-                workService.findById(UUID.fromString("09d4c1d4-d39e-40d3-b70f-81d2178a7f0e")),
-                workService.findById(UUID.fromString("bbeec102-9d76-42cd-a248-ea82ccaed16a"))
+    private OrderDto buildRequestDto() {
+        Mark mark = Mark.builder().id(UUID.randomUUID()).markName("Acura").build();
+        ModelDto modelDto = new ModelDto(UUID.randomUUID(), "CDX", mark);
+        CarDto carDto = new CarDto(null, "А123ВС163", "1HGCM82633A123456", modelDto);
+        UserDto userDto = new UserDto(UUID.randomUUID(), "test@mail.ru", null, "+79990001122", "Иван", "Иванов", Role.ROLE_USER);
+        List<WorkDto> works = List.of(
+                new WorkDto(UUID.randomUUID(), "Замена масла", null, new BigDecimal("1200"), null),
+                new WorkDto(UUID.randomUUID(), "Диагностика", null, new BigDecimal("800"), null)
         );
-        OrderDto requestDto = new OrderDto(
-                null,
-                new CarDto(null, "ABC123", "1HGCM82633A123410",modelDto),
-                userDto,
-                LocalDateTime.now(),
-                new BigDecimal("3200"),
-                Status.PENDING,
-                "Test order description",
-                workDtos
-        );
-        String requestJson = objectMapper.writeValueAsString(requestDto);
-        MvcResult result = mockMvc.perform(post("/api/orders")
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(requestJson)
-                            .with(user("mail2@mail.ru").roles("USER"))
-                        )
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andReturn();
-        String responseJson = result.getResponse().getContentAsString();
-        ApiResponseDto<OrderDto> response = objectMapper.readValue(
-                responseJson,
-                new TypeReference<>() {});
-
-        assertThat(response.getMessage()).isEqualTo("OK");
-        Order savedOrder = orderRepository.findById(response.getData().id())
-                .orElseThrow();
-        assertThat(savedOrder.getCar().getVinNumber()).isEqualTo("1HGCM82633A123410");
-        assertThat(savedOrder.getPrice()).isEqualTo(BigDecimal.valueOf(3200));
-        assertThat(savedOrder.getDescription()).isEqualTo("Test order description");
-        assertThat(savedOrder.getWorks()).hasSize(2);
-        Car savedCar = carRepository.findByVinNumber("1HGCM82633A123410").orElseThrow();
-        assertThat(savedCar.getVinNumber()).isEqualTo("1HGCM82633A123410");
-        assertThat(savedCar.getId()).isNotNull();
-        assertThat(savedCar.getModel().getModelName()).isEqualTo("CDX");
-        assertThat(savedCar.getModel().getMark().getMarkName()).isEqualTo("Acura");
+        return new OrderDto(null, carDto, userDto, LocalDateTime.now(),
+                new BigDecimal("2000"), Status.PENDING, "Тестовый заказ", works);
     }
 
     @Test
-    public void testAddOrder_WithExistingCar() throws Exception {
-        CarDto carDto = carService.findCarById(UUID.fromString("cc0a84db-04f4-43cf-9e7b-17db5ddfc1b8"));
-        UserDto userDto =  userMapper.toDto(userService.getByUsername("mail2@mail.ru"));
-        List<WorkDto> workDtos = List.of(
-                workService.findById(UUID.fromString("09d4c1d4-d39e-40d3-b70f-81d2178a7f0e")),
-                workService.findById(UUID.fromString("bbeec102-9d76-42cd-a248-ea82ccaed16a"))
-        );
-        OrderDto requestDto = new OrderDto(
-                null,
-                carDto,
-                userDto,
-                LocalDateTime.now(),
-                new BigDecimal("3200"),
-                Status.ACCEPTED,
-                "Order with existing car",
-                workDtos);
-        MvcResult result = mockMvc.perform(post("/api/orders")
+    @WithMockUser(username = "test@mail.ru", roles = "USER")
+    void addOrder_authorizedUser_returnsCreatedOrder() throws Exception {
+        OrderDto requestDto = buildRequestDto();
+        OrderDto createdDto = new OrderDto(UUID.randomUUID(), requestDto.carDto(), requestDto.userDto(),
+                requestDto.orderDate(), new BigDecimal("2000"), Status.PENDING, "Тестовый заказ", requestDto.works());
+
+        when(orderService.addOrder(any(OrderDto.class), anyInt())).thenReturn(createdDto);
+
+        mockMvc.perform(post("/api/orders")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDto)))
+                        .content(objectMapper.writeValueAsString(requestDto))
+                        .queryParam("timezoneOffset", "-240"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andReturn();
-        String responseJson = result.getResponse().getContentAsString();
-        ApiResponseDto<OrderDto> response = objectMapper.readValue(
-                responseJson,
-                new TypeReference<>() {});
+                .andExpect(jsonPath("$.message").value("OK"))
+                .andExpect(jsonPath("$.data.id").value(createdDto.id().toString()))
+                .andExpect(jsonPath("$.data.price").value(2000))
+                .andExpect(jsonPath("$.data.status").value("PENDING"));
 
-        assertThat(response.getMessage()).isEqualTo("OK");
-        Order savedOrder = orderRepository.findById(response.getData().id())
-                .orElseThrow();
-        assertThat(savedOrder.getCar().getVinNumber()).isEqualTo("1HGCM82633A123456");
-        assertThat(savedOrder.getDescription()).isEqualTo("Order with existing car");
-        assertThat(savedOrder.getPrice()).isEqualTo(BigDecimal.valueOf(3200));
-        assertThat(savedOrder.getWorks()).hasSize(2);
+        verify(orderService).addOrder(any(OrderDto.class), eq(-240));
     }
 
+    @Test
+    void addOrder_unauthorizedUser_forbidden() throws Exception {
+        mockMvc.perform(post("/api/orders")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(buildRequestDto()))
+                        .queryParam("timezoneOffset", "-240"))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "test@mail.ru", roles = "USER")
+    void findAllOrders_authorizedUser_returnsList() throws Exception {
+        OrderDto dto = new OrderDto(UUID.randomUUID(), null, null, LocalDateTime.now(),
+                new BigDecimal("2000"), Status.ACCEPTED, "Заказ", List.of());
+
+        when(orderService.findAllOrders(any())).thenReturn(List.of(dto));
+
+        mockMvc.perform(get("/api/orders"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("OK"))
+                .andExpect(jsonPath("$.data[0].id").value(dto.id().toString()));
+    }
+
+    @Test
+    @WithMockUser(username = "test@mail.ru", roles = "USER")
+    void findOrderById_returnsOrder() throws Exception {
+        UUID id = UUID.randomUUID();
+        OrderDto dto = new OrderDto(id, null, null, LocalDateTime.now(),
+                new BigDecimal("1500"), Status.PENDING, "Заказ", List.of());
+
+        when(orderService.findOrderById(id)).thenReturn(dto);
+
+        mockMvc.perform(get("/api/orders/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.id").value(id.toString()));
+    }
+
+    @Test
+    @WithMockUser(username = "admin@mail.ru", roles = "ADMIN")
+    void deleteOrder_asAdmin_returnsOk() throws Exception {
+        UUID id = UUID.randomUUID();
+
+        mockMvc.perform(delete("/api/orders/{id}", id))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        verify(orderService).deleteOrder(id);
+    }
 }
